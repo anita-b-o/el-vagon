@@ -1022,16 +1022,16 @@ img {
 }
 
 .destination-attractions-heading {
-  display: grid;
-  align-items: end;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: clamp(0.9rem, 1.5vw, 1.25rem);
   padding-bottom: clamp(2rem, 4vw, 3.5rem);
   border-bottom: 1px solid var(--border);
-  grid-template-columns: minmax(12rem, 0.45fr) minmax(0, 1fr);
-  gap: clamp(2rem, 7vw, 8rem);
 }
 
 .destination-attractions-heading .eyebrow {
-  margin-bottom: 0.55rem;
+  margin: 0;
 }
 
 .destination-attractions-heading h3 {
@@ -2463,15 +2463,9 @@ img {
     height: 55vw;
   }
 
-  .destination-attractions-heading,
   .destination-attraction,
   .destination-attraction.is-reversed {
     grid-template-columns: 1fr;
-  }
-
-  .destination-attractions-heading {
-    align-items: start;
-    gap: 1.25rem;
   }
 
   .destination-attraction-visual,
