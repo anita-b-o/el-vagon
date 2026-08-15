@@ -21,11 +21,14 @@ export function Footer() {
         </div>
         <div className="footer-links">
           <p className="eyebrow eyebrow-light">Encontranos</p>
-          <a href={siteConfig.instagram} target="_blank" rel="noreferrer">
+          <a href={siteConfig.contact.instagram} target="_blank" rel="noreferrer">
             Instagram <ArrowUpRight aria-hidden="true" />
           </a>
-          <a href="#reservas">
-            Consultas <ArrowUpRight aria-hidden="true" />
+          <a href={`mailto:${siteConfig.contact.email}`}>
+            {siteConfig.contact.email} <ArrowUpRight aria-hidden="true" />
+          </a>
+          <a href={`https://wa.me/${siteConfig.contact.whatsapp.number}`}>
+            {siteConfig.contact.whatsapp.display} <ArrowUpRight aria-hidden="true" />
           </a>
           <a href={mapsSearchUrl} target="_blank" rel="noreferrer">
             Ubicación <ArrowUpRight aria-hidden="true" />

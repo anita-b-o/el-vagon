@@ -1,4 +1,5 @@
 import { formatLocalDate, nightsBetween, type DateRange } from "./dates";
+import { siteConfig } from "@/data/site";
 
 type WhatsAppMessageInput = DateRange & {
   fullName: string;
@@ -25,10 +26,9 @@ export function buildWhatsAppMessage(input: WhatsAppMessageInput): string {
 }
 
 export function buildWhatsAppUrl(message: string): string {
-  const number = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "5492241572170").replace(
+  const number = siteConfig.contact.whatsapp.number.replace(
     /\D/g,
     "",
   );
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
-

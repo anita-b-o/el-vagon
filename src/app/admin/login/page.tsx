@@ -3,7 +3,7 @@ import Link from "next/link";
 import { auth, signIn } from "@/auth";
 import { isAllowedAdminProfile } from "@/lib/domain/admin-auth";
 
-export const metadata = { title: "Acceso privado | El Vagón" };
+export const metadata = { title: "Administración | El Vagón" };
 
 export default async function AdminLoginPage() {
   const session = await auth();
@@ -18,8 +18,7 @@ export default async function AdminLoginPage() {
     <main className="admin-login">
       <section className="admin-login-card">
         <p className="eyebrow">El Vagón</p>
-        <h1>Acceso de la encargada</h1>
-        <p>Ingresá con la cuenta de Google autorizada para gestionar solicitudes y fechas.</p>
+        <h1>Administración</h1>
         <form action={async () => {
           "use server";
           await signIn("google", { redirectTo: "/admin/reservas" });

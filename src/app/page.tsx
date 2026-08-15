@@ -33,7 +33,7 @@ export default function Home() {
       addressRegion: siteConfig.province,
       addressCountry: "AR",
     },
-    sameAs: [siteConfig.instagram],
+    sameAs: [siteConfig.contact.instagram],
     ...(siteUrl ? { url: siteUrl } : {}),
     ...(absoluteImages ? { image: absoluteImages } : {}),
     amenityFeature: amenities

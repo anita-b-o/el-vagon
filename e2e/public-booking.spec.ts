@@ -58,8 +58,23 @@ test("keeps the admin panel private and the calendar export token-protected", as
   const response = await page.goto("/admin/reservas");
   expect(response?.status()).toBeLessThan(400);
   await expect(page).toHaveURL(/\/admin\/login/);
-  await expect(page.getByRole("heading", { name: "Acceso de la encargada" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Administración" })).toBeVisible();
+  await expect(page.getByText(/Ingresá con la cuenta de Google autorizada/)).toHaveCount(0);
 
   const ics = await page.request.get("/api/calendar/el-vagon.ics?token=incorrecto");
   expect(ics.status()).toBe(404);
+});
+
+test("shows the configured contact links", async ({ page }) => {
+  await page.goto("/");
+
+  const footer = page.getByRole("contentinfo");
+  await expect(footer.getByRole("link", {
+    name: /elvagongbelgrano\.2024@gmail\.com/i,
+  })).toHaveAttribute("href", "mailto:elvagongbelgrano.2024@gmail.com");
+  await expect(footer.getByRole("link", { name: /2241 572170/i })).toHaveAttribute(
+    "href",
+    "https://wa.me/5492241572170",
+  );
+  await expect(footer.getByRole("link", { name: /Instagram/i })).toBeVisible();
 });

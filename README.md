@@ -43,7 +43,7 @@ https://<preview-exacto>/api/auth/callback/google
 https://el-vagon.vercel.app/api/auth/callback/google
 ```
 
-`ADMIN_GOOGLE_EMAIL` debe coincidir con una única cuenta verificada. No existe contraseña local.
+`ADMIN_GOOGLE_EMAILS` contiene la lista de cuentas verificadas autorizadas, separadas por comas. No existe contraseña local. Durante la migración también se admite `ADMIN_GOOGLE_EMAIL` para no interrumpir el acceso existente.
 
 La propietaria obtiene los feeds privados en:
 
