@@ -82,6 +82,34 @@ test("opens the private admin route from the footer", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Administración" })).toBeVisible();
 });
 
+test("shows the featured General Belgrano attractions", async ({ page }) => {
+  await page.goto("/#general-belgrano");
+
+  const section = page.locator("#general-belgrano");
+  const attractions = [
+    {
+      name: "Termas del Salado",
+      href: "https://share.google/TbrwB7rDFMfTW1iP4",
+    },
+    {
+      name: "Bosque Encantado",
+      href: "https://share.google/KdC14zxLpOg0G6goV",
+    },
+  ];
+
+  for (const attraction of attractions) {
+    const article = section
+      .getByRole("article")
+      .filter({ has: page.getByRole("heading", { name: attraction.name }) });
+    const link = article.getByRole("link", { name: "Ver ubicación" });
+
+    await expect(article).toBeVisible();
+    await expect(link).toHaveAttribute("href", attraction.href);
+    await expect(link).toHaveAttribute("target", "_blank");
+    await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  }
+});
+
 test("keeps the admin login balanced across responsive widths", async ({ page }) => {
   for (const width of [375, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: width < 768 ? 844 : 900 });
