@@ -18,7 +18,6 @@ export type ExternalSource = "AIRBNB" | "BOOKING";
 export type AvailabilityMode = "public" | "strict";
 
 const PUBLIC_TTL_MS = 5 * 60 * 1000;
-const STRICT_TTL_MS = 60 * 1000;
 const PUBLIC_STALE_LIMIT_MS = 6 * 60 * 60 * 1000;
 
 const sourceConfiguration: Array<{
@@ -126,8 +125,11 @@ async function getSourceIntervals(
     .where(eq(externalCalendarSnapshots.source, source))
     .limit(1);
 
-  const ttl = mode === "strict" ? STRICT_TTL_MS : PUBLIC_TTL_MS;
-  if (snapshot && ageInMs(snapshot.fetchedAt, now) <= ttl) {
+  if (
+    mode === "public" &&
+    snapshot &&
+    ageInMs(snapshot.fetchedAt, now) <= PUBLIC_TTL_MS
+  ) {
     return snapshot.intervals.map((interval) => ({
       startDate: parseLocalDate(interval.startDate),
       endDate: parseLocalDate(interval.endDate),
@@ -227,6 +229,5 @@ export async function getExternalCalendarHealth() {
 
 export async function forceRefreshExternalCalendars() {
   const window = defaultAvailabilityWindow();
-  const now = new Date(Date.now() + STRICT_TTL_MS + 1);
-  return getExternalIntervals("strict", window, now);
+  return getExternalIntervals("strict", window);
 }
