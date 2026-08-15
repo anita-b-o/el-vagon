@@ -26,7 +26,7 @@ export const navigation = [
   { label: "General Belgrano", href: "#general-belgrano" },
   { label: "Galería", href: "#galeria" },
   { label: "Ubicación", href: "#ubicacion" },
-  { label: "Contacto", href: "#contacto" },
+  { label: "Disponibilidad", href: "#reservas" },
 ] as const;
 
 export const amenities = [
@@ -40,7 +40,7 @@ export const amenities = [
   { label: "Estacionamiento", icon: "car" },
   { label: "Bicicletas", icon: "bike" },
   { label: "Jardín", icon: "leaf" },
-  { label: "No se permiten mascotas.", icon: "paw" },
+  { label: "No se permiten mascotas", icon: "paw" },
 ] as const;
 
 export type GalleryImage = {

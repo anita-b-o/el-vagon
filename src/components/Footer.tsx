@@ -1,10 +1,9 @@
 import Image from "next/image";
 import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { siteConfig } from "@/data/site";
-import { getBookingContact, mapsSearchUrl } from "@/lib/booking";
+import { mapsSearchUrl } from "@/lib/booking";
 
 export function Footer() {
-  const booking = getBookingContact();
   const year = new Date().getFullYear();
 
   return (
@@ -25,7 +24,7 @@ export function Footer() {
           <a href={siteConfig.instagram} target="_blank" rel="noreferrer">
             Instagram <ArrowUpRight aria-hidden="true" />
           </a>
-          <a href={booking.href} target="_blank" rel="noreferrer">
+          <a href="#reservas">
             Consultas <ArrowUpRight aria-hidden="true" />
           </a>
           <a href={mapsSearchUrl} target="_blank" rel="noreferrer">

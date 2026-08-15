@@ -1,6 +1,5 @@
 import { Accommodation } from "@/components/Accommodation";
 import { Amenities } from "@/components/Amenities";
-import { BookingCTA } from "@/components/BookingCTA";
 import { Experience } from "@/components/Experience";
 import { Footer } from "@/components/Footer";
 import { GallerySection } from "@/components/GallerySection";
@@ -9,6 +8,7 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Intro } from "@/components/Intro";
 import { Location } from "@/components/Location";
+import { ReservationSection } from "@/components/ReservationSection";
 import { amenities, siteConfig } from "@/data/site";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -60,7 +60,7 @@ export default function Home() {
         <GallerySection />
         <GeneralBelgrano />
         <Location />
-        <BookingCTA />
+        <ReservationSection />
       </main>
       <Footer />
       <script

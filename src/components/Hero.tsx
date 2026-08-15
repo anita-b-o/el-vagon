@@ -1,11 +1,8 @@
 import Image from "next/image";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { siteConfig } from "@/data/site";
-import { getBookingContact } from "@/lib/booking";
 
 export function Hero() {
-  const booking = getBookingContact();
-
   return (
     <section id="el-vagon" className="hero" aria-labelledby="hero-title">
       <Image
@@ -31,11 +28,9 @@ export function Hero() {
         <div className="hero-actions">
           <a
             className="button button-light"
-            href={booking.href}
-            target="_blank"
-            rel="noreferrer"
+            href="#reservas"
           >
-            Reservar estadía <ArrowUpRight aria-hidden="true" />
+            Consultar fechas <ArrowUpRight aria-hidden="true" />
           </a>
           <a className="text-link text-link-light" href="#bienvenidos">
             Descubrir El Vagón
@@ -49,4 +44,3 @@ export function Hero() {
     </section>
   );
 }
-

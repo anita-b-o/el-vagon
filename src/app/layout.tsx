@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { bodyFont, displayFont } from "@/lib/fonts";
 import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
+import "react-day-picker/style.css";
 
 const siteUrl = getSiteUrl();
 const socialImageUrl = siteUrl ? `${siteUrl}/opengraph-image.jpg` : "";

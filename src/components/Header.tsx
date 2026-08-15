@@ -4,7 +4,6 @@ import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { navigation, siteConfig } from "@/data/site";
-import { getBookingContact } from "@/lib/booking";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -14,7 +13,6 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const booking = getBookingContact();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48);
@@ -97,10 +95,8 @@ export function Header() {
 
         <a
           className="header-booking"
-          href={booking.href}
-          target="_blank"
-          rel="noreferrer"
-          aria-label={`Reservar a través de ${booking.channel}`}
+          href="#reservas"
+          aria-label="Consultar disponibilidad"
         >
           Reservar
         </a>
@@ -139,9 +135,7 @@ export function Header() {
         </nav>
         <a
           className="button button-dark mobile-booking"
-          href={booking.href}
-          target="_blank"
-          rel="noreferrer"
+          href="#reservas"
           tabIndex={menuOpen ? 0 : -1}
           onClick={closeMenu}
         >
@@ -152,4 +146,3 @@ export function Header() {
     </header>
   );
 }
-
