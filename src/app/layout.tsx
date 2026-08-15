@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     : {}),
   title: "El Vagón | Alojamiento en General Belgrano",
   description:
-    "El Vagón es un alojamiento rodeado de naturaleza en General Belgrano, Buenos Aires. Descubrí el espacio y consultá disponibilidad para tu próxima escapada.",
+    "El Vagón es un alojamiento rodeado de naturaleza en General Belgrano, Buenos Aires. Descubrí el espacio, sus atractivos y las propuestas culturales que acompañan al destino durante el año.",
   openGraph: {
     type: "website",
     locale: "es_AR",
@@ -54,7 +54,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es-AR" className={`${bodyFont.variable} ${displayFont.variable}`}>
+    <html
+      lang="es-AR"
+      className={`${bodyFont.variable} ${displayFont.variable}`}
+      data-scroll-behavior="smooth"
+    >
       <body>{children}</body>
     </html>
   );

@@ -110,6 +110,118 @@ test("shows the featured General Belgrano attractions", async ({ page }) => {
   }
 });
 
+test("presents the recurring General Belgrano events as an editorial journey", async ({
+  page,
+}) => {
+  await page.goto("/#eventos");
+
+  const section = page.locator("#eventos");
+  const expectedEvents = [
+    "Festival Morfi",
+    "Festival Mayor de Tango y Folklore",
+    "Carnaval de General Belgrano",
+    "Festival Megatropical",
+    "Aniversario de General Belgrano",
+    "Fiesta de la Bondiola y la Tradición",
+    "Encuentro Gaucho a las Costas del Salado",
+    "Fiestas Patronales de la Inmaculada Concepción",
+  ];
+
+  await expect(
+    section.getByRole("heading", { name: "General Belgrano, todo el año" }),
+  ).toBeVisible();
+  await expect(section.getByRole("article")).toHaveCount(8);
+
+  for (const eventName of expectedEvents) {
+    await expect(section.getByRole("heading", { name: eventName })).toBeAttached();
+  }
+
+  const monthNav = section.getByRole("navigation", {
+    name: "Recorrer eventos por mes",
+  });
+  const expectedMonths = [
+    ["ENE", "#eventos-enero"],
+    ["FEB", "#eventos-febrero"],
+    ["AGO", "#eventos-agosto"],
+    ["NOV", "#eventos-noviembre"],
+    ["DIC", "#eventos-diciembre"],
+  ] as const;
+
+  for (const [label, href] of expectedMonths) {
+    await expect(monthNav.getByRole("link", { name: label, exact: true })).toHaveAttribute(
+      "href",
+      href,
+    );
+  }
+
+  const agendaLink = section.getByRole("link", { name: "Ver agenda oficial" });
+  await expect(agendaLink).toHaveAttribute(
+    "href",
+    "https://generalbelgrano.tur.ar/novedades",
+  );
+  await expect(agendaLink).toHaveAttribute("target", "_blank");
+  await expect(agendaLink).toHaveAttribute("rel", "noopener noreferrer");
+
+  const photos = section.locator(".event-story-image img");
+  await expect(photos).toHaveCount(2);
+  for (let index = 0; index < 2; index += 1) {
+    const photo = photos.nth(index);
+    await photo.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() => photo.evaluate((image) => (image as HTMLImageElement).naturalWidth))
+      .toBeGreaterThan(0);
+  }
+
+  const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
+  expect(structuredData.join(" ")).not.toContain('"@type":"Event"');
+});
+
+test("keeps the event journey usable across target responsive widths", async ({ page }) => {
+  for (const width of [375, 390, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: width < 768 ? 844 : 900 });
+    await page.goto("/#eventos");
+
+    const layout = await page.locator("#eventos").evaluate((section) => {
+      const sectionBox = section.getBoundingClientRect();
+      const monthNav = section.querySelector<HTMLElement>(".events-month-nav");
+
+      return {
+        sectionInsideViewport:
+          sectionBox.left >= -0.5 && sectionBox.right <= window.innerWidth + 0.5,
+        noGlobalHorizontalOverflow:
+          document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+        monthNavigationCanScroll:
+          monthNav !== null && monthNav.scrollWidth >= monthNav.clientWidth,
+      };
+    });
+
+    expect(layout, `events layout at ${width}px`).toEqual({
+      sectionInsideViewport: true,
+      noGlobalHorizontalOverflow: true,
+      monthNavigationCanScroll: true,
+    });
+  }
+});
+
+test("supports month navigation, keyboard focus and reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/#eventos");
+
+  const februaryLink = page
+    .getByRole("navigation", { name: "Recorrer eventos por mes" })
+    .getByRole("link", { name: "FEB", exact: true });
+  await februaryLink.focus();
+  await expect(februaryLink).toBeFocused();
+  await februaryLink.press("Enter");
+  await expect(page).toHaveURL(/#eventos-febrero$/);
+  await expect(page.locator("#eventos-febrero")).toBeInViewport();
+
+  const scrollBehavior = await page.locator("html").evaluate((element) =>
+    getComputedStyle(element).scrollBehavior,
+  );
+  expect(scrollBehavior).toBe("auto");
+});
+
 test("keeps the admin login balanced across responsive widths", async ({ page }) => {
   for (const width of [375, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: width < 768 ? 844 : 900 });
