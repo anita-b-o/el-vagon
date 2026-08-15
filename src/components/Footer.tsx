@@ -29,7 +29,7 @@ export function Footer() {
             Email <ArrowUpRight aria-hidden="true" />
           </a>
           <a href={`https://wa.me/${siteConfig.contact.whatsapp.number}`}>
-            Whatsapp <ArrowUpRight aria-hidden="true" />
+            WhatsApp <ArrowUpRight aria-hidden="true" />
           </a>
           <a href={mapsSearchUrl} target="_blank" rel="noreferrer">
             Ubicación <ArrowUpRight aria-hidden="true" />
