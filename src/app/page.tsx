@@ -10,12 +10,14 @@ import { Hero } from "@/components/Hero";
 import { Intro } from "@/components/Intro";
 import { Location } from "@/components/Location";
 import { amenities, siteConfig } from "@/data/site";
+import { getSiteUrl } from "@/lib/site-url";
 
 export default function Home() {
-  const absoluteImages = siteConfig.siteUrl
+  const siteUrl = getSiteUrl();
+  const absoluteImages = siteUrl
     ? [
-        `${siteConfig.siteUrl}/images/el-vagon/hero-jardin.webp`,
-        `${siteConfig.siteUrl}/images/el-vagon/fachada-galeria.webp`,
+        `${siteUrl}/images/el-vagon/hero-jardin.webp`,
+        `${siteUrl}/images/el-vagon/fachada-galeria.webp`,
       ]
     : undefined;
 
@@ -32,7 +34,7 @@ export default function Home() {
       addressCountry: "AR",
     },
     sameAs: [siteConfig.instagram],
-    ...(siteConfig.siteUrl ? { url: siteConfig.siteUrl } : {}),
+    ...(siteUrl ? { url: siteUrl } : {}),
     ...(absoluteImages ? { image: absoluteImages } : {}),
     amenityFeature: amenities
       .filter((amenity) => !amenity.label.startsWith("Mascotas"))

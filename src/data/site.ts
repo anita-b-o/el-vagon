@@ -9,7 +9,6 @@ export const siteConfig = {
   fullAddress: "Dorrego 747, General Belgrano, Buenos Aires, Argentina",
   instagram: "https://www.instagram.com/elvagongeneralbelgrano/",
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim() ?? "",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "",
   bookingMessage:
     "Hola, estuve viendo la página de El Vagón y quisiera consultar disponibilidad.",
   logos: {
@@ -119,4 +118,3 @@ export const galleryImages: GalleryImage[] = [
     layout: "portrait",
   },
 ];
-
