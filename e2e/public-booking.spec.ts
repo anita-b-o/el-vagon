@@ -65,6 +65,23 @@ test("keeps the admin panel private and the calendar export token-protected", as
   expect(ics.status()).toBe(404);
 });
 
+test("opens the private admin route from the footer", async ({ page }) => {
+  await page.goto("/");
+
+  const adminLink = page
+    .getByRole("contentinfo")
+    .getByRole("link", { name: "Administración", exact: true });
+
+  await expect(adminLink).toBeVisible();
+  await expect(adminLink).toHaveAttribute("href", "/admin/reservas");
+  await adminLink.focus();
+  await expect(adminLink).toBeFocused();
+  await adminLink.click();
+
+  await expect(page).toHaveURL(/\/admin\/login/);
+  await expect(page.getByRole("heading", { name: "Administración" })).toBeVisible();
+});
+
 test("shows the configured contact links", async ({ page }) => {
   await page.goto("/");
 

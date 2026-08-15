@@ -1487,6 +1487,33 @@ img {
   text-transform: uppercase;
 }
 
+.footer-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.75rem;
+}
+
+.footer-admin-link {
+  border-left: 1px solid rgba(255, 252, 245, 0.18);
+  padding-left: 0.75rem;
+  color: rgba(255, 252, 245, 0.55);
+  font-size: 0.65rem;
+  letter-spacing: 0.03em;
+  text-transform: none;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.22em;
+  transition:
+    color 180ms ease,
+    text-decoration-color 180ms ease;
+}
+
+.footer-admin-link:hover {
+  color: rgba(255, 252, 245, 0.82);
+  text-decoration-color: currentColor;
+}
+
 /* Motion */
 @keyframes hero-breathe {
   from {

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { siteConfig } from "@/data/site";
 import { mapsSearchUrl } from "@/lib/booking";
@@ -40,7 +41,12 @@ export function Footer() {
         </a>
       </div>
       <div className="container footer-bottom">
-        <p>© {year} El Vagón</p>
+        <div className="footer-meta">
+          <p>© {year} El Vagón</p>
+          <Link className="footer-admin-link" href="/admin/reservas">
+            Administración
+          </Link>
+        </div>
         <p>{siteConfig.address}</p>
       </div>
     </footer>
