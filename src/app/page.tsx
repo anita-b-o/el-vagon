@@ -37,7 +37,7 @@ export default function Home() {
     ...(siteUrl ? { url: siteUrl } : {}),
     ...(absoluteImages ? { image: absoluteImages } : {}),
     amenityFeature: amenities
-      .filter((amenity) => !amenity.label.startsWith("Mascotas"))
+      .filter((amenity) => amenity.icon !== "paw")
       .map((amenity) => ({
         "@type": "LocationFeatureSpecification",
         name: amenity.label,

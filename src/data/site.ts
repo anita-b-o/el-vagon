@@ -40,7 +40,7 @@ export const amenities = [
   { label: "Estacionamiento", icon: "car" },
   { label: "Bicicletas", icon: "bike" },
   { label: "Jardín", icon: "leaf" },
-  { label: "Mascotas: consultanos", icon: "paw" },
+  { label: "No se permiten mascotas.", icon: "paw" },
 ] as const;
 
 export type GalleryImage = {
