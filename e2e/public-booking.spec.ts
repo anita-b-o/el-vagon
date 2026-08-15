@@ -82,14 +82,49 @@ test("opens the private admin route from the footer", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Administración" })).toBeVisible();
 });
 
+test("keeps the admin login balanced across responsive widths", async ({ page }) => {
+  for (const width of [375, 390, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: width < 768 ? 844 : 900 });
+    await page.goto("/admin/login");
+
+    const layout = await page.locator(".admin-login-card").evaluate((card) => {
+      const heading = card.querySelector("h1");
+      const button = card.querySelector("button");
+      if (!heading || !button) throw new Error("Admin login controls are missing");
+
+      const cardBox = card.getBoundingClientRect();
+      const headingBox = heading.getBoundingClientRect();
+      const buttonBox = button.getBoundingClientRect();
+
+      return {
+        cardInsideViewport: cardBox.left >= 0 && cardBox.right <= window.innerWidth,
+        headingInsideCard:
+          headingBox.left >= cardBox.left && headingBox.right <= cardBox.right,
+        buttonInsideCard:
+          buttonBox.left >= cardBox.left && buttonBox.right <= cardBox.right,
+        noHorizontalOverflow:
+          document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      };
+    });
+
+    expect(layout, `admin login layout at ${width}px`).toEqual({
+      cardInsideViewport: true,
+      headingInsideCard: true,
+      buttonInsideCard: true,
+      noHorizontalOverflow: true,
+    });
+  }
+});
+
 test("shows the configured contact links", async ({ page }) => {
   await page.goto("/");
 
   const footer = page.getByRole("contentinfo");
-  await expect(footer.getByRole("link", {
-    name: /elvagongbelgrano\.2024@gmail\.com/i,
-  })).toHaveAttribute("href", "mailto:elvagongbelgrano.2024@gmail.com");
-  await expect(footer.getByRole("link", { name: /2241 572170/i })).toHaveAttribute(
+  await expect(footer.getByRole("link", { name: "Email", exact: true })).toHaveAttribute(
+    "href",
+    "mailto:elvagongbelgrano.2024@gmail.com",
+  );
+  await expect(footer.getByRole("link", { name: /WhatsApp/i })).toHaveAttribute(
     "href",
     "https://wa.me/5492241572170",
   );

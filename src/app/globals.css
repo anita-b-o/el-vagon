@@ -1567,23 +1567,48 @@ img {
   display: grid;
   min-height: 100svh;
   place-items: center;
-  padding: 2rem;
+  padding: clamp(1rem, 4vw, 2.5rem);
   background: var(--forest);
 }
 
 .admin-login-card {
-  width: min(100%, 34rem);
+  width: min(100%, 40rem);
   background: var(--cream);
-  padding: clamp(2.2rem, 6vw, 5rem);
+  padding: clamp(3rem, 7vw, 5.25rem) clamp(1.75rem, 6vw, 4.75rem);
+  text-align: center;
+}
+
+.admin-login-card .eyebrow {
+  margin-bottom: clamp(1.4rem, 3vw, 2.1rem);
 }
 
 .admin-login-card h1,
 .admin-header h1 {
   margin: 0;
   font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(2.8rem, 7vw, 5rem);
   font-weight: 400;
   line-height: 0.95;
+}
+
+.admin-login-card h1 {
+  max-width: 100%;
+  font-size: clamp(2.25rem, 6vw, 4.25rem);
+  letter-spacing: -0.025em;
+}
+
+.admin-header h1 {
+  font-size: clamp(2.8rem, 7vw, 5rem);
+}
+
+.admin-login-card form {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.admin-login-card .button {
+  width: min(100%, 22rem);
 }
 
 .admin-login-card > p:not(.eyebrow) {
@@ -1592,7 +1617,7 @@ img {
 }
 
 .admin-login-card .text-link {
-  margin-top: 1.5rem;
+  margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
 }
 
 .admin-shell {
