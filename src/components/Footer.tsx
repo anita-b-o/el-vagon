@@ -26,10 +26,10 @@ export function Footer() {
             Instagram <ArrowUpRight aria-hidden="true" />
           </a>
           <a href={`mailto:${siteConfig.contact.email}`}>
-            {siteConfig.contact.email} <ArrowUpRight aria-hidden="true" />
+            Email <ArrowUpRight aria-hidden="true" />
           </a>
           <a href={`https://wa.me/${siteConfig.contact.whatsapp.number}`}>
-            {siteConfig.contact.whatsapp.display} <ArrowUpRight aria-hidden="true" />
+            Whatsapp <ArrowUpRight aria-hidden="true" />
           </a>
           <a href={mapsSearchUrl} target="_blank" rel="noreferrer">
             Ubicación <ArrowUpRight aria-hidden="true" />
