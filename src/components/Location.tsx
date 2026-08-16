@@ -8,7 +8,7 @@ export function Location() {
       <div className="container location-grid">
         <div className="location-copy reveal">
           <p className="eyebrow eyebrow-light">Ubicación</p>
-          <h2 id="location-title">Estamos en General Belgrano</h2>
+          <h2 id="location-title">Dónde encontrarnos</h2>
           <address>
             <MapPin aria-hidden="true" />
             <span>
@@ -41,4 +41,3 @@ export function Location() {
     </section>
   );
 }
-

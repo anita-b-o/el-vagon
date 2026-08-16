@@ -317,6 +317,42 @@ test("supports month navigation, keyboard focus and reduced motion", async ({ pa
   expect(scrollBehavior).toBe("auto");
 });
 
+test("keeps the location heading clear at compact mobile widths", async ({ page }) => {
+  for (const width of [375, 390]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/#ubicacion");
+
+    const section = page.locator("#ubicacion");
+    const heading = section.getByRole("heading", { name: "Dónde encontrarnos" });
+
+    await expect(heading).toBeVisible();
+    await expect(section).toContainText("Dorrego 747");
+    await expect(section).toContainText("General Belgrano");
+    await expect(section).toContainText("Buenos Aires, Argentina");
+    await expect(page.getByText("Estamos en General Belgrano", { exact: true })).toHaveCount(0);
+
+    const layout = await section.evaluate((element) => {
+      const headingElement = element.querySelector<HTMLElement>("#location-title");
+      if (!headingElement) throw new Error("Location heading is missing");
+
+      const sectionBox = element.getBoundingClientRect();
+      const headingBox = headingElement.getBoundingClientRect();
+
+      return {
+        headingInsideSection:
+          headingBox.left >= sectionBox.left && headingBox.right <= sectionBox.right,
+        noHorizontalOverflow:
+          document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      };
+    });
+
+    expect(layout, `location layout at ${width}px`).toEqual({
+      headingInsideSection: true,
+      noHorizontalOverflow: true,
+    });
+  }
+});
+
 test("keeps the admin login balanced across responsive widths", async ({ page }) => {
   for (const width of [375, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: width < 768 ? 844 : 900 });
