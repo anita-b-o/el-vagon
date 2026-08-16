@@ -71,6 +71,7 @@ export function RecurringEvents() {
                               fill
                               sizes="(max-width: 900px) 100vw, 54vw"
                               loading="lazy"
+                              style={{ objectPosition: event.image.objectPosition }}
                             />
                             <figcaption>{event.image.sourceLabel}</figcaption>
                           </figure>

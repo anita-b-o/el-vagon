@@ -14,7 +14,8 @@ export type RecurringEventImage = {
   src: string;
   alt: string;
   sourceLabel: string;
-  sourceUrl: string;
+  sourceUrl?: string;
+  objectPosition?: string;
 };
 
 export type RecurringEvent = {
@@ -76,6 +77,12 @@ export const recurringEvents: RecurringEvent[] = [
     description:
       "Un festival para probar sabores, conocer emprendedores y artesanos, recorrer sus patios gastronómico y cervecero y quedarse entre música, danza, peña, baile y propuestas para las infancias.",
     fact: "Más de 16.000 personas en su edición 2026",
+    image: {
+      src: "/images/events/festival-morfi.webp",
+      alt: "Festival Morfi en General Belgrano",
+      sourceLabel: "Archivo provisto por El Vagón",
+      objectPosition: "center 52%",
+    },
     sources: [tourismSource, municipalitySource],
   },
   {
@@ -87,6 +94,12 @@ export const recurringEvents: RecurringEvent[] = [
     description:
       "Uno de los grandes encuentros culturales de General Belgrano, con artistas nacionales, regionales y locales reunidos alrededor del tango, el folklore y la danza.",
     fact: "Desde 1994 · 33.ª edición en 2026",
+    image: {
+      src: "/images/events/festival-mayor-tango-folklore.webp",
+      alt: "Festival Mayor de Tango y Folklore de General Belgrano",
+      sourceLabel: "Archivo provisto por El Vagón",
+      objectPosition: "center 50%",
+    },
     sources: [tourismSource, municipalitySource, sibom2024Source],
   },
   {
@@ -97,6 +110,12 @@ export const recurringEvents: RecurringEvent[] = [
     category: "Carnaval · Calle · Baile",
     description:
       "Murgas, comparsas, espuma, carrozas y batucadas transforman las calles y plazas de la ciudad en una celebración popular para bailar y compartir.",
+    image: {
+      src: "/images/events/carnaval-general-belgrano.webp",
+      alt: "Carnaval de General Belgrano",
+      sourceLabel: "Archivo provisto por El Vagón",
+      objectPosition: "center 58%",
+    },
     sources: [tourismSource, municipalitySource],
   },
   {
@@ -107,6 +126,12 @@ export const recurringEvents: RecurringEvent[] = [
     category: "Cumbia · Música tropical",
     description:
       "Una noche dedicada a la cumbia y la música tropical, que combina artistas reconocidos con propuestas locales y el espíritu festivo de la ciudad.",
+    image: {
+      src: "/images/events/festival-megatropical.webp",
+      alt: "Festival Megatropical de General Belgrano",
+      sourceLabel: "Archivo provisto por El Vagón",
+      objectPosition: "center 52%",
+    },
     sources: [tourismSource, municipalitySource],
   },
   {
@@ -152,6 +177,12 @@ export const recurringEvents: RecurringEvent[] = [
     category: "Cultura criolla · Música · Danza",
     description:
       "Un encuentro junto al Salado para acercarse a la cultura criolla entre folklore, tango, danza, músicos, cantinas, artesanos y actividades gauchas.",
+    image: {
+      src: "/images/events/encuentro-gaucho-salado.webp",
+      alt: "Encuentro Gaucho a las Costas del Salado",
+      sourceLabel: "Archivo provisto por El Vagón",
+      objectPosition: "center 48%",
+    },
     sources: [tourismSource, municipalitySource, sibom2023Source],
   },
   {
@@ -162,6 +193,12 @@ export const recurringEvents: RecurringEvent[] = [
     category: "Fe · Tradición · Comunidad",
     description:
       "La celebración patronal reúne a la comunidad de General Belgrano alrededor de sus actividades religiosas, la misa y la tradicional procesión.",
+    image: {
+      src: "/images/events/fiestas-patronales-inmaculada.webp",
+      alt: "Fiestas Patronales de la Inmaculada Concepción en General Belgrano",
+      sourceLabel: "Archivo provisto por El Vagón",
+      objectPosition: "center 45%",
+    },
     sources: [municipalitySource, sibom2023Source],
   },
 ];

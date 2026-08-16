@@ -90,10 +90,12 @@ test("shows the featured General Belgrano attractions", async ({ page }) => {
     {
       name: "Termas del Salado",
       href: "https://share.google/TbrwB7rDFMfTW1iP4",
+      alt: "Termas del Salado en General Belgrano",
     },
     {
       name: "Bosque Encantado",
       href: "https://share.google/KdC14zxLpOg0G6goV",
+      alt: "Bosque Encantado de General Belgrano",
     },
   ];
 
@@ -107,6 +109,12 @@ test("shows the featured General Belgrano attractions", async ({ page }) => {
     await expect(link).toHaveAttribute("href", attraction.href);
     await expect(link).toHaveAttribute("target", "_blank");
     await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+
+    const photo = article.getByRole("img", { name: attraction.alt });
+    await photo.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() => photo.evaluate((image) => (image as HTMLImageElement).naturalWidth))
+      .toBeGreaterThan(0);
   }
 });
 
@@ -163,8 +171,8 @@ test("presents the recurring General Belgrano events as an editorial journey", a
   await expect(agendaLink).toHaveAttribute("rel", "noopener noreferrer");
 
   const photos = section.locator(".event-story-image img");
-  await expect(photos).toHaveCount(2);
-  for (let index = 0; index < 2; index += 1) {
+  await expect(photos).toHaveCount(8);
+  for (let index = 0; index < 8; index += 1) {
     const photo = photos.nth(index);
     await photo.scrollIntoViewIfNeeded();
     await expect

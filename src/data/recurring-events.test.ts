@@ -30,19 +30,22 @@ describe("recurring events editorial data", () => {
     }
   });
 
-  it("uses only the two approved local official photographs", () => {
+  it("uses the eight approved local event photographs with descriptive alt text", () => {
     const images = recurringEvents.flatMap((event) => (event.image ? [event.image] : []));
 
     expect(images.map((image) => image.src)).toEqual([
+      "/images/events/festival-morfi.webp",
+      "/images/events/festival-mayor-tango-folklore.webp",
+      "/images/events/carnaval-general-belgrano.webp",
+      "/images/events/festival-megatropical.webp",
       "/images/events/aniversario-general-belgrano.webp",
       "/images/events/fiesta-bondiola-tradicion.webp",
+      "/images/events/encuentro-gaucho-salado.webp",
+      "/images/events/fiestas-patronales-inmaculada.webp",
     ]);
-    expect(images.every((image) => image.sourceLabel === "Archivo oficial municipal")).toBe(
-      true,
-    );
-    expect(images.every((image) => image.sourceUrl.startsWith("https://assets.zyrosite.com/"))).toBe(
-      true,
-    );
+    expect(images.every((image) => image.alt.length > 0)).toBe(true);
+    expect(new Set(images.map((image) => image.alt)).size).toBe(images.length);
+    expect(images.every((image) => image.sourceLabel.length > 0)).toBe(true);
   });
 
   it("does not include excluded events or unconfirmed next editions", () => {

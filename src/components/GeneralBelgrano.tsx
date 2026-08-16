@@ -8,6 +8,7 @@ type Attraction = {
   image?: {
     src: string;
     alt: string;
+    objectPosition?: string;
   };
 };
 
@@ -17,12 +18,22 @@ const attractions: Attraction[] = [
     description:
       "Un espacio termal para relajarse y sumar una experiencia distinta durante la visita a General Belgrano.",
     href: "https://share.google/TbrwB7rDFMfTW1iP4",
+    image: {
+      src: "/images/general-belgrano/termas-del-salado.webp",
+      alt: "Termas del Salado en General Belgrano",
+      objectPosition: "center 58%",
+    },
   },
   {
     name: "Bosque Encantado",
     description:
       "Un paseo entre naturaleza y senderos, ideal para disfrutar General Belgrano con más calma.",
     href: "https://share.google/KdC14zxLpOg0G6goV",
+    image: {
+      src: "/images/general-belgrano/bosque-encantado.webp",
+      alt: "Bosque Encantado de General Belgrano",
+      objectPosition: "center",
+    },
   },
 ];
 
@@ -104,6 +115,7 @@ export function GeneralBelgrano() {
                       alt={attraction.image.alt}
                       fill
                       sizes="(max-width: 900px) 100vw, 58vw"
+                      style={{ objectPosition: attraction.image.objectPosition }}
                     />
                   </figure>
                 ) : (
