@@ -4,20 +4,32 @@ import { recurringEvents, recurringMonths } from "@/data/recurring-events";
 
 const officialAgendaUrl = "https://generalbelgrano.tur.ar/novedades";
 
-export function RecurringEvents() {
+type RecurringEventsProps = {
+  showIntro?: boolean;
+};
+
+export function RecurringEvents({ showIntro = true }: RecurringEventsProps) {
   return (
-    <section id="eventos" className="section events-section" aria-labelledby="events-title">
+    <section
+      id="eventos"
+      className={`section events-section${showIntro ? "" : " agenda-events-section"}`}
+      {...(showIntro
+        ? { "aria-labelledby": "events-title" }
+        : { "aria-label": "Eventos recurrentes de General Belgrano" })}
+    >
       <div className="container">
-        <header className="events-intro">
-          <div className="section-heading reveal">
-            <p className="eyebrow">Agenda cultural</p>
-            <h2 id="events-title">General Belgrano, todo el año</h2>
-          </div>
-          <p className="events-intro-copy reveal">
-            Sabores, música y tradiciones marcan distintos momentos del año. Una guía
-            para imaginar la próxima escapada y descubrir cómo se vive cada encuentro.
-          </p>
-        </header>
+        {showIntro ? (
+          <header className="events-intro">
+            <div className="section-heading reveal">
+              <p className="eyebrow">Agenda cultural</p>
+              <h2 id="events-title">General Belgrano, todo el año</h2>
+            </div>
+            <p className="events-intro-copy reveal">
+              Sabores, música y tradiciones marcan distintos momentos del año. Una guía
+              para imaginar la próxima escapada y descubrir cómo se vive cada encuentro.
+            </p>
+          </header>
+        ) : null}
 
         <nav className="events-month-nav reveal" aria-label="Recorrer eventos por mes">
           <div className="events-month-nav-track">

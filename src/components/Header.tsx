@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { navigation, siteConfig } from "@/data/site";
@@ -65,13 +66,14 @@ export function Header() {
   return (
     <header className={`site-header ${scrolled || menuOpen ? "is-solid" : ""}`}>
       <div className="header-inner">
-        <a className="brand-lockup" href="#el-vagon" aria-label="El Vagón, inicio">
+        <Link className="brand-lockup" href="/" aria-label="El Vagón, inicio">
           <span className="brand-mark" aria-hidden="true">
             <Image
               className="brand-mark-light"
               src={siteConfig.logos.markLight}
               alt=""
               fill
+              loading="eager"
               sizes="52px"
             />
             <Image
@@ -83,23 +85,23 @@ export function Header() {
             />
           </span>
           <span className="brand-name">EL VAGÓN</span>
-        </a>
+        </Link>
 
         <nav className="desktop-nav" aria-label="Navegación principal">
           {navigation.map((item) => (
-            <a key={item.href} href={item.href}>
+            <Link key={item.href} href={item.href}>
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
-        <a
+        <Link
           className="header-booking"
-          href="#reservas"
+          href="/#reservas"
           aria-label="Consultar disponibilidad"
         >
           Reservar
-        </a>
+        </Link>
 
         <button
           ref={triggerRef}
@@ -122,7 +124,7 @@ export function Header() {
       >
         <nav aria-label="Navegación móvil">
           {navigation.map((item, index) => (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               tabIndex={menuOpen ? 0 : -1}
@@ -130,17 +132,17 @@ export function Header() {
             >
               <span>{String(index + 1).padStart(2, "0")}</span>
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
-        <a
+        <Link
           className="button button-dark mobile-booking"
-          href="#reservas"
+          href="/#reservas"
           tabIndex={menuOpen ? 0 : -1}
           onClick={closeMenu}
         >
           Consultar disponibilidad
-        </a>
+        </Link>
         <p>General Belgrano · Buenos Aires</p>
       </div>
     </header>

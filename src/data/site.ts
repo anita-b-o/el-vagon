@@ -26,13 +26,14 @@ export const siteConfig = {
 } as const;
 
 export const navigation = [
-  { label: "El Vagón", href: "#el-vagon" },
-  { label: "El alojamiento", href: "#alojamiento" },
-  { label: "Experiencia", href: "#experiencia" },
-  { label: "General Belgrano", href: "#general-belgrano" },
-  { label: "Galería", href: "#galeria" },
-  { label: "Ubicación", href: "#ubicacion" },
-  { label: "Disponibilidad", href: "#reservas" },
+  { label: "El Vagón", href: "/#el-vagon" },
+  { label: "El alojamiento", href: "/#alojamiento" },
+  { label: "Experiencia", href: "/#experiencia" },
+  { label: "General Belgrano", href: "/#general-belgrano" },
+  { label: "Agenda", href: "/agenda" },
+  { label: "Galería", href: "/#galeria" },
+  { label: "Ubicación", href: "/#ubicacion" },
+  { label: "Disponibilidad", href: "/#reservas" },
 ] as const;
 
 export const amenities = [

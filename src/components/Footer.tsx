@@ -35,7 +35,7 @@ export function Footer() {
             Ubicación <ArrowUpRight aria-hidden="true" />
           </a>
         </div>
-        <a className="back-to-top" href="#el-vagon" aria-label="Volver arriba">
+        <a className="back-to-top" href="#contenido" aria-label="Volver arriba">
           <ArrowUp aria-hidden="true" />
           <span>Volver arriba</span>
         </a>

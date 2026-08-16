@@ -37,8 +37,8 @@ test("creates a pending request before handing off to WhatsApp", async ({ page }
   await page.route("https://wa.me/**", (route) => route.abort("blockedbyclient"));
 
   await page.goto("/#reservas");
-  await page.getByRole("button", { name: /15 de agosto de 2026/i }).click();
-  await page.getByRole("button", { name: /17 de agosto de 2026/i }).click();
+  await page.getByRole("button", { name: /18 de agosto de 2026/i }).click();
+  await page.getByRole("button", { name: /20 de agosto de 2026/i }).click();
   await page.getByLabel("Nombre completo").fill("Ana Pérez");
   await page.getByLabel("Cantidad de personas").selectOption("2");
   await page.getByRole("textbox", { name: "Consulta Opcional" }).fill("Llegamos después de las 18 hs");
@@ -48,8 +48,8 @@ test("creates a pending request before handing off to WhatsApp", async ({ page }
   expect(submitted).toMatchObject({
     fullName: "Ana Pérez",
     guestCount: "2",
-    checkIn: "2026-08-15",
-    checkOut: "2026-08-17",
+    checkIn: "2026-08-18",
+    checkOut: "2026-08-20",
     question: "Llegamos después de las 18 hs",
   });
 });
@@ -118,9 +118,7 @@ test("shows the featured General Belgrano attractions", async ({ page }) => {
   }
 });
 
-test("presents the recurring General Belgrano events as an editorial journey", async ({
-  page,
-}) => {
+test("replaces the home event journey with a compact agenda invitation", async ({ page }) => {
   await page.goto("/#eventos");
 
   const section = page.locator("#eventos");
@@ -138,6 +136,74 @@ test("presents the recurring General Belgrano events as an editorial journey", a
   await expect(
     section.getByRole("heading", { name: "General Belgrano, todo el año" }),
   ).toBeVisible();
+  await expect(section.getByRole("link", { name: "Ver agenda cultural" })).toHaveAttribute(
+    "href",
+    "/agenda",
+  );
+  await expect(section.getByRole("article")).toHaveCount(0);
+
+  for (const eventName of expectedEvents) {
+    await expect(page.getByRole("heading", { name: eventName })).toHaveCount(0);
+  }
+
+  await section.getByRole("link", { name: "Ver agenda cultural" }).click();
+  await expect(page).toHaveURL(/\/agenda$/);
+  await expect(page.getByRole("heading", { name: "Agenda cultural", level: 1 })).toBeVisible();
+});
+
+test("opens the agenda from the primary navigation on desktop and mobile", async ({
+  page,
+}, testInfo) => {
+  await page.goto("/");
+
+  if (testInfo.project.name === "mobile") {
+    await page.getByRole("button", { name: "Abrir menú" }).click();
+    const agendaLink = page
+      .getByRole("navigation", { name: "Navegación móvil" })
+      .getByRole("link", { name: /Agenda/ });
+    await expect(agendaLink).toBeVisible();
+    await expect(agendaLink).toHaveAttribute("href", "/agenda");
+    await Promise.all([
+      page.waitForURL(/\/agenda$/, { timeout: 15_000 }),
+      agendaLink.click(),
+    ]);
+  } else {
+    const agendaLink = page
+      .getByRole("navigation", { name: "Navegación principal" })
+      .getByRole("link", { name: "Agenda", exact: true });
+    await expect(agendaLink).toBeVisible();
+    await expect(agendaLink).toHaveAttribute("href", "/agenda");
+    await Promise.all([
+      page.waitForURL(/\/agenda$/, { timeout: 15_000 }),
+      agendaLink.click(),
+    ]);
+  }
+
+  await expect(page).toHaveURL(/\/agenda$/);
+  await expect(page.getByRole("heading", { name: "Agenda cultural", level: 1 })).toBeVisible();
+});
+
+test("presents the recurring General Belgrano events on the agenda page", async ({ page }) => {
+  await page.goto("/agenda");
+
+  await expect(page).toHaveTitle("Agenda cultural de General Belgrano | El Vagón");
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+    "content",
+    "Descubrí las fiestas, festivales y eventos recurrentes de General Belgrano y planificá tu próxima escapada a El Vagón.",
+  );
+
+  const section = page.locator("#eventos");
+  const expectedEvents = [
+    "Festival Morfi",
+    "Festival Mayor de Tango y Folklore",
+    "Carnaval de General Belgrano",
+    "Festival Megatropical",
+    "Aniversario de General Belgrano",
+    "Fiesta de la Bondiola y la Tradición",
+    "Encuentro Gaucho a las Costas del Salado",
+    "Fiestas Patronales de la Inmaculada Concepción",
+  ];
+
   await expect(section.getByRole("article")).toHaveCount(8);
 
   for (const eventName of expectedEvents) {
@@ -182,16 +248,25 @@ test("presents the recurring General Belgrano events as an editorial journey", a
 
   const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
   expect(structuredData.join(" ")).not.toContain('"@type":"Event"');
+
+  const backLink = page.getByRole("link", { name: "Volver a El Vagón" });
+  await expect(backLink).toHaveAttribute("href", "/");
+  await Promise.all([page.waitForURL(/\/$/, { timeout: 15_000 }), backLink.click()]);
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.locator("#el-vagon")).toBeVisible();
 });
 
 test("keeps the event journey usable across target responsive widths", async ({ page }) => {
   for (const width of [375, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: width < 768 ? 844 : 900 });
-    await page.goto("/#eventos");
+    await page.goto("/agenda");
 
     const layout = await page.locator("#eventos").evaluate((section) => {
       const sectionBox = section.getBoundingClientRect();
       const monthNav = section.querySelector<HTMLElement>(".events-month-nav");
+      const header = document.querySelector<HTMLElement>(".header-inner");
+      const desktopNav = document.querySelector<HTMLElement>(".desktop-nav");
+      const desktopNavBox = desktopNav?.getBoundingClientRect();
 
       return {
         sectionInsideViewport:
@@ -200,6 +275,16 @@ test("keeps the event journey usable across target responsive widths", async ({ 
           document.documentElement.scrollWidth <= document.documentElement.clientWidth,
         monthNavigationCanScroll:
           monthNav !== null && monthNav.scrollWidth >= monthNav.clientWidth,
+        headerInsideViewport:
+          header !== null &&
+          header.getBoundingClientRect().left >= -0.5 &&
+          header.getBoundingClientRect().right <= window.innerWidth + 0.5,
+        desktopNavigationFits:
+          desktopNav === null ||
+          getComputedStyle(desktopNav).display === "none" ||
+          (desktopNavBox !== undefined &&
+            desktopNavBox.left >= -0.5 &&
+            desktopNavBox.right <= window.innerWidth + 0.5),
       };
     });
 
@@ -207,13 +292,15 @@ test("keeps the event journey usable across target responsive widths", async ({ 
       sectionInsideViewport: true,
       noGlobalHorizontalOverflow: true,
       monthNavigationCanScroll: true,
+      headerInsideViewport: true,
+      desktopNavigationFits: true,
     });
   }
 });
 
 test("supports month navigation, keyboard focus and reduced motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/#eventos");
+  await page.goto("/agenda");
 
   const februaryLink = page
     .getByRole("navigation", { name: "Recorrer eventos por mes" })

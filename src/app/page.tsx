@@ -1,4 +1,5 @@
 import { Accommodation } from "@/components/Accommodation";
+import { AgendaPreview } from "@/components/AgendaPreview";
 import { Amenities } from "@/components/Amenities";
 import { Experience } from "@/components/Experience";
 import { Footer } from "@/components/Footer";
@@ -9,7 +10,6 @@ import { Hero } from "@/components/Hero";
 import { Intro } from "@/components/Intro";
 import { Location } from "@/components/Location";
 import { ReservationSection } from "@/components/ReservationSection";
-import { RecurringEvents } from "@/components/RecurringEvents";
 import { amenities, siteConfig } from "@/data/site";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -60,7 +60,7 @@ export default function Home() {
         <Experience />
         <GallerySection />
         <GeneralBelgrano />
-        <RecurringEvents />
+        <AgendaPreview />
         <Location />
         <ReservationSection />
       </main>
