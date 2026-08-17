@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { AttractionsBlock } from "@/components/AttractionsBlock";
 
 export function GeneralBelgrano() {
   return (
@@ -67,8 +66,6 @@ export function GeneralBelgrano() {
             <p>Paseo costanero · General Belgrano</p>
           </div>
         </div>
-
-        <AttractionsBlock />
       </div>
     </section>
   );

@@ -82,48 +82,19 @@ test("opens the private admin route from the footer", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Administración" })).toBeVisible();
 });
 
-test("integrates each featured attraction once inside the home destination", async ({ page }) => {
+test("removes the standalone attractions block from the home only", async ({ page }) => {
   await page.goto("/#general-belgrano");
 
   const section = page.locator("#general-belgrano");
-  await expect(section.locator(".destination-attractions")).toHaveCount(1);
-  await expect(section.getByRole("article")).toHaveCount(2);
+  await expect(section.locator(".destination-attractions")).toHaveCount(0);
   await expect(
     section.getByRole("heading", { name: "Dos propuestas para sumar al viaje" }),
-  ).toBeVisible();
-  await expect(page.locator("main > .destination-attractions")).toHaveCount(0);
-
-  const attractions = [
-    {
-      name: "Termas del Salado",
-      href: "https://share.google/TbrwB7rDFMfTW1iP4",
-      alt: "Termas del Salado en General Belgrano",
-    },
-    {
-      name: "Bosque Encantado",
-      href: "https://share.google/KdC14zxLpOg0G6goV",
-      alt: "Bosque Encantado de General Belgrano",
-    },
-  ];
-
-  for (const attraction of attractions) {
-    await expect(page.getByRole("heading", { name: attraction.name })).toHaveCount(1);
-    const article = section
-      .getByRole("article")
-      .filter({ has: page.getByRole("heading", { name: attraction.name }) });
-    const link = article.getByRole("link", { name: "Ver ubicación" });
-
-    await expect(article).toBeVisible();
-    await expect(link).toHaveAttribute("href", attraction.href);
-    await expect(link).toHaveAttribute("target", "_blank");
-    await expect(link).toHaveAttribute("rel", "noopener noreferrer");
-
-    const photo = article.getByRole("img", { name: attraction.alt });
-    await photo.scrollIntoViewIfNeeded();
-    await expect
-      .poll(() => photo.evaluate((image) => (image as HTMLImageElement).naturalWidth))
-      .toBeGreaterThan(0);
-  }
+  ).toHaveCount(0);
+  await expect(page.getByText("Para conocer", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Termas del Salado" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Bosque Encantado" })).toHaveCount(0);
+  await expect(section.locator(".destination-images + *")).toHaveCount(0);
+  await expect(section.locator("xpath=following-sibling::*[1]")).toHaveId("ubicacion");
 });
 
 test("removes the home agenda banner and links to agenda from the destination", async ({ page }) => {
@@ -175,14 +146,14 @@ test("reuses the editorial attractions block in the destination guide", async ({
   await expect(attractions.getByRole("heading", { name: "Bosque Encantado" })).toBeVisible();
 });
 
-test("keeps the integrated destination natural across target responsive widths", async ({ page }) => {
+test("keeps the shortened home destination natural across target responsive widths", async ({ page }) => {
   for (const width of [375, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: width < 768 ? 844 : 900 });
     await page.goto("/#general-belgrano");
 
     const section = page.locator("#general-belgrano");
     const lastPhoto = section.getByRole("img", {
-      name: "Bosque Encantado de General Belgrano",
+      name: "Árboles y sendero de la costanera al atardecer",
     });
     await lastPhoto.scrollIntoViewIfNeeded();
     await expect
@@ -191,18 +162,11 @@ test("keeps the integrated destination natural across target responsive widths",
 
     const layout = await section.evaluate((element) => {
       const sectionBox = element.getBoundingClientRect();
-      const attractions = Array.from(
-        element.querySelectorAll<HTMLElement>(".destination-attraction"),
-      );
       const links = Array.from(element.querySelectorAll<HTMLElement>(".text-link"));
 
       return {
         sectionInsideViewport:
           sectionBox.left >= -0.5 && sectionBox.right <= window.innerWidth + 0.5,
-        attractionsInsideViewport: attractions.every((attraction) => {
-          const box = attraction.getBoundingClientRect();
-          return box.left >= -0.5 && box.right <= window.innerWidth + 0.5;
-        }),
         linksInsideViewport: links.every((link) => {
           const box = link.getBoundingClientRect();
           return box.left >= -0.5 && box.right <= window.innerWidth + 0.5;
@@ -214,14 +178,87 @@ test("keeps the integrated destination natural across target responsive widths",
 
     expect(layout, `destination layout at ${width}px`).toEqual({
       sectionInsideViewport: true,
-      attractionsInsideViewport: true,
       linksInsideViewport: true,
       noHorizontalOverflow: true,
     });
-    await expect(page.getByRole("heading", { name: "Termas del Salado" })).toHaveCount(1);
-    await expect(page.getByRole("heading", { name: "Bosque Encantado" })).toHaveCount(1);
+    await expect(page.getByText("Para conocer", { exact: true })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Termas del Salado" })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Bosque Encantado" })).toHaveCount(0);
     await expect(page.locator("#eventos")).toHaveCount(0);
   }
+});
+
+test("uses the same conceptual navigation order on desktop and mobile", async ({ page }) => {
+  const expectedLabels = [
+    "El Vagón",
+    "El alojamiento",
+    "Experiencia",
+    "Galería",
+    "General Belgrano",
+    "Agenda",
+    "Ubicación",
+    "Disponibilidad",
+  ];
+  const expectedHrefs = [
+    "/",
+    "/alojamiento",
+    "/#experiencia",
+    "/#galeria",
+    "/general-belgrano",
+    "/agenda",
+    "/#ubicacion",
+    "/#reservas",
+  ];
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  const desktopLinks = page
+    .getByRole("navigation", { name: "Navegación principal" })
+    .getByRole("link");
+  await expect(desktopLinks).toContainText(expectedLabels);
+  await expect(desktopLinks).toHaveCount(expectedHrefs.length);
+  for (let index = 0; index < expectedHrefs.length; index += 1) {
+    await expect(desktopLinks.nth(index)).toHaveAttribute("href", expectedHrefs[index]);
+  }
+
+  const desktopHeaderLayout = await page.locator(".header-inner").evaluate((header) => {
+    const brand = header.querySelector<HTMLElement>(".brand-lockup");
+    const nav = header.querySelector<HTMLElement>(".desktop-nav");
+    const booking = header.querySelector<HTMLElement>(".header-booking");
+    if (!brand || !nav || !booking) throw new Error("Desktop header controls are missing");
+    const headerBox = header.getBoundingClientRect();
+    const brandBox = brand.getBoundingClientRect();
+    const navBox = nav.getBoundingClientRect();
+    const bookingBox = booking.getBoundingClientRect();
+
+    return {
+      insideViewport: headerBox.left >= 0 && headerBox.right <= window.innerWidth,
+      noOverlap: brandBox.right < navBox.left && navBox.right < bookingBox.left,
+      noHorizontalOverflow:
+        document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    };
+  });
+  expect(desktopHeaderLayout).toEqual({
+    insideViewport: true,
+    noOverlap: true,
+    noHorizontalOverflow: true,
+  });
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Abrir menú" }).click();
+  const mobileLinks = page
+    .getByRole("navigation", { name: "Navegación móvil" })
+    .getByRole("link");
+  await expect(mobileLinks).toContainText(expectedLabels);
+  await expect(mobileLinks).toHaveCount(expectedHrefs.length);
+  for (let index = 0; index < expectedHrefs.length; index += 1) {
+    await expect(mobileLinks.nth(index)).toHaveAttribute("href", expectedHrefs[index]);
+  }
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    ),
+  ).toBe(true);
 });
 
 test("opens the agenda from the primary navigation on desktop and mobile", async ({

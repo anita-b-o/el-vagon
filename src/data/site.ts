@@ -34,9 +34,9 @@ export const navigation = [
   { label: "El Vagón", href: "/" },
   { label: "El alojamiento", href: "/alojamiento" },
   { label: "Experiencia", href: "/#experiencia" },
+  { label: "Galería", href: "/#galeria" },
   { label: "General Belgrano", href: "/general-belgrano" },
   { label: "Agenda", href: "/agenda" },
-  { label: "Galería", href: "/#galeria" },
   { label: "Ubicación", href: "/#ubicacion" },
   { label: "Disponibilidad", href: "/#reservas" },
 ] as const;
