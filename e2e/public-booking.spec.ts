@@ -82,30 +82,10 @@ test("opens the private admin route from the footer", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Administración" })).toBeVisible();
 });
 
-test("moves the General Belgrano attractions out of the home journey", async ({ page }) => {
+test("shows the featured General Belgrano attractions", async ({ page }) => {
   await page.goto("/#general-belgrano");
 
   const section = page.locator("#general-belgrano");
-  await expect(section.getByText("Para conocer", { exact: true })).toHaveCount(0);
-  await expect(section.getByRole("heading", { name: "Termas del Salado" })).toHaveCount(0);
-  await expect(section.getByRole("heading", { name: "Bosque Encantado" })).toHaveCount(0);
-  await expect(section.getByRole("article")).toHaveCount(0);
-
-  const attractionsLink = section.getByRole("link", { name: "Lugares para conocer" });
-  await expect(attractionsLink).toBeVisible();
-  await expect(attractionsLink).toHaveAttribute("href", "/para-conocer");
-  await attractionsLink.click();
-
-  await expect(page).toHaveURL(/\/para-conocer$/);
-  await expect(
-    page.getByRole("heading", { level: 1, name: "Lugares para sumar al viaje" }),
-  ).toBeVisible();
-});
-
-test("presents the existing attractions on the dedicated page", async ({ page }) => {
-  const response = await page.goto("/para-conocer");
-  expect(response?.status()).toBe(200);
-
   const attractions = [
     {
       name: "Termas del Salado",
@@ -120,7 +100,7 @@ test("presents the existing attractions on the dedicated page", async ({ page })
   ];
 
   for (const attraction of attractions) {
-    const article = page
+    const article = section
       .getByRole("article")
       .filter({ has: page.getByRole("heading", { name: attraction.name }) });
     const link = article.getByRole("link", { name: "Ver ubicación" });
@@ -136,73 +116,6 @@ test("presents the existing attractions on the dedicated page", async ({ page })
       .poll(() => photo.evaluate((image) => (image as HTMLImageElement).naturalWidth))
       .toBeGreaterThan(0);
   }
-
-  await expect(page).toHaveTitle("Qué conocer en General Belgrano | El Vagón");
-  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
-    "content",
-    "Descubrí Termas del Salado, Bosque Encantado y otros lugares para conocer durante una escapada a General Belgrano.",
-  );
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
-    "href",
-    "https://www.elvagon.com.ar/para-conocer",
-  );
-});
-
-test("keeps the attractions journey usable across target responsive widths", async ({ page }) => {
-  for (const width of [375, 390, 768, 1024, 1440]) {
-    await page.setViewportSize({ width, height: width < 768 ? 844 : 900 });
-    await page.goto("/#general-belgrano");
-
-    const destinationLink = page
-      .locator("#general-belgrano")
-      .getByRole("link", { name: "Lugares para conocer" });
-    await expect(destinationLink).toBeVisible();
-    await expect(destinationLink).toHaveAttribute("href", "/para-conocer");
-
-    const destinationLinkInsideViewport = await destinationLink.evaluate((link) => {
-      const box = link.getBoundingClientRect();
-      return box.left >= -0.5 && box.right <= window.innerWidth + 0.5;
-    });
-    expect(destinationLinkInsideViewport, `destination link at ${width}px`).toBe(true);
-
-    await page.goto("/para-conocer");
-
-    const layout = await page.locator("main").evaluate((main) => {
-      const images = Array.from(main.querySelectorAll<HTMLImageElement>("article img"));
-      const links = Array.from(main.querySelectorAll<HTMLElement>("article .text-link"));
-
-      return {
-        mainInsideViewport:
-          main.getBoundingClientRect().left >= -0.5 &&
-          main.getBoundingClientRect().right <= window.innerWidth + 0.5,
-        imagesInsideViewport: images.every((image) => {
-          const box = image.getBoundingClientRect();
-          return box.left >= -0.5 && box.right <= window.innerWidth + 0.5;
-        }),
-        linksInsideViewport: links.every((link) => {
-          const box = link.getBoundingClientRect();
-          return box.left >= -0.5 && box.right <= window.innerWidth + 0.5;
-        }),
-        noHorizontalOverflow:
-          document.documentElement.scrollWidth <= document.documentElement.clientWidth,
-      };
-    });
-
-    expect(layout, `attractions layout at ${width}px`).toEqual({
-      mainInsideViewport: true,
-      imagesInsideViewport: true,
-      linksInsideViewport: true,
-      noHorizontalOverflow: true,
-    });
-  }
-});
-
-test("links the General Belgrano guide to the attractions page", async ({ page }) => {
-  await page.goto("/general-belgrano");
-
-  const link = page.getByRole("link", { name: "Lugares para conocer" });
-  await expect(link).toBeVisible();
-  await expect(link).toHaveAttribute("href", "/para-conocer");
 });
 
 test("replaces the home event journey with a compact agenda invitation", async ({ page }) => {
@@ -548,7 +461,6 @@ test("exposes only public canonical URLs in robots and sitemap", async ({ page }
     "https://www.elvagon.com.ar",
     "https://www.elvagon.com.ar/alojamiento",
     "https://www.elvagon.com.ar/general-belgrano",
-    "https://www.elvagon.com.ar/para-conocer",
     "https://www.elvagon.com.ar/agenda",
   ]) {
     expect(sitemapText).toContain(`<loc>${url}</loc>`);
@@ -575,11 +487,6 @@ test("serves useful indexable accommodation and destination pages", async ({ pag
       path: "/general-belgrano",
       title: "Qué hacer en General Belgrano | El Vagón",
       heading: "Qué hacer en General Belgrano",
-    },
-    {
-      path: "/para-conocer",
-      title: "Qué conocer en General Belgrano | El Vagón",
-      heading: "Lugares para sumar al viaje",
     },
   ];
 
