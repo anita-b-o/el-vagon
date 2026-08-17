@@ -9,11 +9,16 @@ export const siteConfig = {
   fullAddress: "Dorrego 747, General Belgrano, Buenos Aires, Argentina",
   contact: {
     email: "elvagongbelgrano.2024@gmail.com",
+    telephone: "2241 572170",
     instagram: "https://www.instagram.com/elvagongeneralbelgrano/",
     whatsapp: {
       display: "2241 572170",
       number: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim() || "5492241572170",
     },
+  },
+  externalProfiles: {
+    booking: "https://www.booking.com/hotel/ar/el-vagon-general-belgrano.html",
+    airbnb: "https://www.airbnb.com.ar/rooms/1282026783450558700",
   },
   bookingMessage:
     "Hola, estuve viendo la página de El Vagón y quisiera consultar disponibilidad.",
@@ -26,10 +31,10 @@ export const siteConfig = {
 } as const;
 
 export const navigation = [
-  { label: "El Vagón", href: "/#el-vagon" },
-  { label: "El alojamiento", href: "/#alojamiento" },
+  { label: "El Vagón", href: "/" },
+  { label: "El alojamiento", href: "/alojamiento" },
   { label: "Experiencia", href: "/#experiencia" },
-  { label: "General Belgrano", href: "/#general-belgrano" },
+  { label: "General Belgrano", href: "/general-belgrano" },
   { label: "Agenda", href: "/agenda" },
   { label: "Galería", href: "/#galeria" },
   { label: "Ubicación", href: "/#ubicacion" },

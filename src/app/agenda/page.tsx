@@ -5,29 +5,33 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { RecurringEvents } from "@/components/RecurringEvents";
-import { getSiteUrl } from "@/lib/site-url";
+import { SITE_URL } from "@/lib/site-url";
 
 const title = "Agenda cultural de General Belgrano | El Vagón";
 const description =
   "Descubrí las fiestas, festivales y eventos recurrentes de General Belgrano y planificá tu próxima escapada a El Vagón.";
-const siteUrl = getSiteUrl();
+const pageUrl = `${SITE_URL}/agenda`;
+const socialImage = `${SITE_URL}/images/events/festival-mayor-tango-folklore.webp`;
 
 export const metadata: Metadata = {
   title,
   description,
-  ...(siteUrl ? { alternates: { canonical: `${siteUrl}/agenda` } } : {}),
+  alternates: { canonical: pageUrl },
+  robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     locale: "es_AR",
     siteName: "El Vagón",
     title,
     description,
-    ...(siteUrl ? { url: `${siteUrl}/agenda` } : {}),
+    url: pageUrl,
+    images: [{ url: socialImage, alt: "Agenda cultural de General Belgrano" }],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
+    images: [socialImage],
   },
 };
 
@@ -63,6 +67,9 @@ export default function AgendaPage() {
               </Link>
               <Link className="button button-light" href="/#reservas">
                 Consultar disponibilidad <ArrowUpRight aria-hidden="true" />
+              </Link>
+              <Link className="button button-outline-light" href="/general-belgrano">
+                Conocer General Belgrano <ArrowUpRight aria-hidden="true" />
               </Link>
             </div>
           </div>

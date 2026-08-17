@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 type Attraction = {
@@ -60,6 +61,9 @@ export function GeneralBelgrano() {
             >
               Turismo en General Belgrano <ArrowUpRight aria-hidden="true" />
             </a>
+            <Link className="text-link" href="/general-belgrano">
+              Guía para tu escapada <ArrowUpRight aria-hidden="true" />
+            </Link>
           </div>
         </div>
 

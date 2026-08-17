@@ -18,21 +18,28 @@ export function Footer() {
             height={528}
             sizes="180px"
           />
-          <p>General Belgrano · Buenos Aires</p>
+          <address>
+            <strong>{siteConfig.name}</strong>
+            <span>{siteConfig.fullAddress}</span>
+            <a href={`tel:+${siteConfig.contact.whatsapp.number}`}>
+              {siteConfig.contact.whatsapp.display}
+            </a>
+            <a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a>
+          </address>
         </div>
         <div className="footer-links">
-          <p className="eyebrow eyebrow-light">Encontranos</p>
+          <p className="eyebrow eyebrow-light">Más información</p>
+          <Link href="/alojamiento">
+            El alojamiento <ArrowUpRight aria-hidden="true" />
+          </Link>
+          <Link href="/general-belgrano">
+            General Belgrano <ArrowUpRight aria-hidden="true" />
+          </Link>
+          <Link href="/agenda">
+            Agenda <ArrowUpRight aria-hidden="true" />
+          </Link>
           <a href={siteConfig.contact.instagram} target="_blank" rel="noreferrer">
             Instagram <ArrowUpRight aria-hidden="true" />
-          </a>
-          <a href={`mailto:${siteConfig.contact.email}`}>
-            Email <ArrowUpRight aria-hidden="true" />
-          </a>
-          <a href={`https://wa.me/${siteConfig.contact.whatsapp.number}`}>
-            WhatsApp <ArrowUpRight aria-hidden="true" />
-          </a>
-          <a href={mapsSearchUrl} target="_blank" rel="noreferrer">
-            Ubicación <ArrowUpRight aria-hidden="true" />
           </a>
         </div>
         <a className="back-to-top" href="#contenido" aria-label="Volver arriba">
@@ -47,7 +54,9 @@ export function Footer() {
             Administración
           </Link>
         </div>
-        <p>{siteConfig.address}</p>
+        <a href={mapsSearchUrl} target="_blank" rel="noreferrer">
+          Ver ubicación
+        </a>
       </div>
     </footer>
   );

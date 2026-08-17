@@ -109,7 +109,7 @@ export function buildPrivateCalendar(
   for (const block of blocks) {
     lines.push(
       "BEGIN:VEVENT",
-      `UID:block-${block.id}@el-vagon.vercel.app`,
+      `UID:block-${block.id}@elvagon.com.ar`,
       `DTSTAMP:${dtstamp}`,
       `LAST-MODIFIED:${block.updatedAt.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z")}`,
       `DTSTART;VALUE=DATE:${toIcsDate(block.startDate)}`,
@@ -122,4 +122,3 @@ export function buildPrivateCalendar(
   lines.push("END:VCALENDAR");
   return lines.map(foldIcsLine).join("\r\n") + "\r\n";
 }
-

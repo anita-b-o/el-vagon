@@ -391,13 +391,133 @@ test("shows the configured contact links", async ({ page }) => {
   await page.goto("/");
 
   const footer = page.getByRole("contentinfo");
-  await expect(footer.getByRole("link", { name: "Email", exact: true })).toHaveAttribute(
+  await expect(
+    footer.getByRole("link", { name: "elvagongbelgrano.2024@gmail.com", exact: true }),
+  ).toHaveAttribute(
     "href",
     "mailto:elvagongbelgrano.2024@gmail.com",
   );
-  await expect(footer.getByRole("link", { name: /WhatsApp/i })).toHaveAttribute(
+  await expect(footer.getByRole("link", { name: "2241 572170", exact: true })).toHaveAttribute(
     "href",
-    "https://wa.me/5492241572170",
+    "tel:+5492241572170",
   );
   await expect(footer.getByRole("link", { name: /Instagram/i })).toBeVisible();
+  await expect(footer).toContainText("Dorrego 747, General Belgrano, Buenos Aires, Argentina");
+});
+
+test("publishes canonical SEO metadata and valid lodging structured data", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(page).toHaveTitle("El Vagón | Alojamiento en General Belgrano");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    "https://www.elvagon.com.ar",
+  );
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
+    "content",
+    "https://www.elvagon.com.ar",
+  );
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "Alojamiento para dos en General Belgrano",
+    }),
+  ).toBeVisible();
+
+  const rawStructuredData = await page
+    .locator('script[type="application/ld+json"]')
+    .textContent();
+  const structuredData = JSON.parse(rawStructuredData || "{}") as Record<string, unknown>;
+  expect(structuredData).toMatchObject({
+    "@context": "https://schema.org",
+    "@type": "LodgingBusiness",
+    "@id": "https://www.elvagon.com.ar/#lodging",
+    name: "El Vagón",
+    url: "https://www.elvagon.com.ar",
+    telephone: "2241 572170",
+    email: "elvagongbelgrano.2024@gmail.com",
+    checkinTime: "15:00",
+    checkoutTime: "11:00",
+  });
+  expect(JSON.stringify(structuredData)).not.toContain("el-vagon.vercel.app");
+  expect(structuredData).not.toHaveProperty("aggregateRating");
+  expect(structuredData).not.toHaveProperty("review");
+  expect(structuredData).not.toHaveProperty("priceRange");
+});
+
+test("exposes only public canonical URLs in robots and sitemap", async ({ page }) => {
+  const robots = await page.request.get("/robots.txt");
+  expect(robots.status()).toBe(200);
+  const robotsText = await robots.text();
+  expect(robotsText).toContain("Disallow: /admin/");
+  expect(robotsText).toContain("Disallow: /api/");
+  expect(robotsText).toContain("Sitemap: https://www.elvagon.com.ar/sitemap.xml");
+
+  const sitemap = await page.request.get("/sitemap.xml");
+  expect(sitemap.status()).toBe(200);
+  const sitemapText = await sitemap.text();
+  for (const url of [
+    "https://www.elvagon.com.ar",
+    "https://www.elvagon.com.ar/alojamiento",
+    "https://www.elvagon.com.ar/general-belgrano",
+    "https://www.elvagon.com.ar/agenda",
+  ]) {
+    expect(sitemapText).toContain(`<loc>${url}</loc>`);
+  }
+  expect(sitemapText).not.toContain("/admin/");
+  expect(sitemapText).not.toContain("/api/");
+  expect(sitemapText).not.toContain("el-vagon.vercel.app");
+});
+
+test("serves useful indexable accommodation and destination pages", async ({ page }) => {
+  const browserErrors: string[] = [];
+  page.on("pageerror", (error) => browserErrors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error") browserErrors.push(message.text());
+  });
+
+  const pages = [
+    {
+      path: "/alojamiento",
+      title: "Alojamiento para dos en General Belgrano | El Vagón",
+      heading: "Alojamiento para dos en General Belgrano",
+    },
+    {
+      path: "/general-belgrano",
+      title: "Qué hacer en General Belgrano | El Vagón",
+      heading: "Qué hacer en General Belgrano",
+    },
+  ];
+
+  for (const item of pages) {
+    const response = await page.goto(item.path);
+    expect(response?.status()).toBe(200);
+    await expect(page).toHaveTitle(item.title);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+    await expect(page.getByRole("heading", { level: 1, name: item.heading })).toBeVisible();
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      `https://www.elvagon.com.ar${item.path}`,
+    );
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+      "content",
+      "index, follow",
+    );
+    const hasHorizontalOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    );
+    expect(hasHorizontalOverflow).toBe(false);
+  }
+
+  expect(browserErrors).toEqual([]);
+});
+
+test("keeps private pages out of search results", async ({ page }) => {
+  const response = await page.goto("/admin/login");
+  expect(response?.headers()["x-robots-tag"]).toBe("noindex, nofollow, noarchive");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+    "content",
+    /noindex.*nofollow/,
+  );
 });

@@ -11,22 +11,22 @@ import { Intro } from "@/components/Intro";
 import { Location } from "@/components/Location";
 import { ReservationSection } from "@/components/ReservationSection";
 import { amenities, siteConfig } from "@/data/site";
-import { getSiteUrl } from "@/lib/site-url";
+import { SITE_URL } from "@/lib/site-url";
 
 export default function Home() {
-  const siteUrl = getSiteUrl();
-  const absoluteImages = siteUrl
-    ? [
-        `${siteUrl}/images/el-vagon/hero-jardin.webp`,
-        `${siteUrl}/images/el-vagon/fachada-galeria.webp`,
-      ]
-    : undefined;
-
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "LodgingBusiness",
+    "@id": `${SITE_URL}/#lodging`,
     name: siteConfig.name,
     description: siteConfig.shortDescription,
+    url: SITE_URL,
+    image: [
+      `${SITE_URL}/images/el-vagon/hero-jardin.webp`,
+      `${SITE_URL}/images/el-vagon/fachada-galeria.webp`,
+    ],
+    telephone: siteConfig.contact.telephone,
+    email: siteConfig.contact.email,
     address: {
       "@type": "PostalAddress",
       streetAddress: siteConfig.address,
@@ -34,9 +34,13 @@ export default function Home() {
       addressRegion: siteConfig.province,
       addressCountry: "AR",
     },
-    sameAs: [siteConfig.contact.instagram],
-    ...(siteUrl ? { url: siteUrl } : {}),
-    ...(absoluteImages ? { image: absoluteImages } : {}),
+    sameAs: [
+      siteConfig.contact.instagram,
+      siteConfig.externalProfiles.booking,
+      siteConfig.externalProfiles.airbnb,
+    ],
+    checkinTime: "15:00",
+    checkoutTime: "11:00",
     amenityFeature: amenities
       .filter((amenity) => amenity.icon !== "paw")
       .map((amenity) => ({

@@ -9,9 +9,9 @@ export function Intro() {
           <SectionHeading eyebrow="Bienvenidos" title="Una pausa en General Belgrano" />
           <div className="intro-body reveal">
             <p>
-              El Vagón es un lugar donde el tiempo parece ir un poco más despacio.
-              Verde alrededor, rincones para estar tranquilos y un espacio pensado para
-              compartir una escapada de a dos.
+              El Vagón es un alojamiento en General Belgrano, Buenos Aires, donde el
+              tiempo parece ir un poco más despacio. Está pensado para hasta dos
+              huéspedes, con verde alrededor y rincones para compartir una escapada.
             </p>
             <p>
               Acá el plan puede ser tan simple como abrir una ventana, tomar algo afuera

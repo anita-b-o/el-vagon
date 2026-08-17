@@ -40,7 +40,7 @@ Para Google OAuth, crear una aplicación web y registrar callbacks exactos:
 
 ```text
 https://<preview-exacto>/api/auth/callback/google
-https://el-vagon.vercel.app/api/auth/callback/google
+https://www.elvagon.com.ar/api/auth/callback/google
 ```
 
 `ADMIN_GOOGLE_EMAILS` contiene la lista de cuentas verificadas autorizadas, separadas por comas. No existe contraseña local. Durante la migración también se admite `ADMIN_GOOGLE_EMAIL` para no interrumpir el acceso existente.
@@ -53,7 +53,7 @@ La propietaria obtiene los feeds privados en:
 Después de configurar `ICAL_EXPORT_TOKEN`, el feed propio productivo es:
 
 ```text
-https://el-vagon.vercel.app/api/calendar/el-vagon.ics?token=<ICAL_EXPORT_TOKEN>
+https://www.elvagon.com.ar/api/calendar/el-vagon.ics?token=<ICAL_EXPORT_TOKEN>
 ```
 
 Puede importarse en Airbnb y Booking. La propagación iCal depende de los intervalos de actualización de cada plataforma y no es instantánea.

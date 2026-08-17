@@ -1,21 +1,27 @@
 import type { MetadataRoute } from "next";
-import { getSiteUrl } from "@/lib/site-url";
+import { SITE_URL } from "@/lib/site-url";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = getSiteUrl();
-
-  if (!siteUrl) return [];
-
   return [
     {
-      url: siteUrl,
+      url: SITE_URL,
       changeFrequency: "monthly",
       priority: 1,
     },
     {
-      url: `${siteUrl}/agenda`,
+      url: `${SITE_URL}/alojamiento`,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/general-belgrano`,
       changeFrequency: "monthly",
       priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/agenda`,
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
   ];
 }

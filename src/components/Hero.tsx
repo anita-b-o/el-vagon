@@ -17,7 +17,7 @@ export function Hero() {
       <div className="hero-shade" />
       <div className="hero-content container">
         <p className="hero-kicker">EL VAGÓN</p>
-        <h1 id="hero-title">Un refugio entre naturaleza y tranquilidad</h1>
+        <h1 id="hero-title">Alojamiento para dos en General Belgrano</h1>
         <p className="hero-location">
           {siteConfig.city} <span aria-hidden="true">·</span> {siteConfig.province}
         </p>
