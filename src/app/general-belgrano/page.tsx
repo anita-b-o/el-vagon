@@ -126,42 +126,9 @@ export default function GeneralBelgranoPage() {
                 visita. Antes de ir, conviene confirmar días, horarios y condiciones en
                 los canales oficiales.
               </p>
-            </div>
-            <div className="destination-cards">
-              <article className="destination-card reveal">
-                <figure className="image-frame">
-                  <Image
-                    src="/images/general-belgrano/termas-del-salado.webp"
-                    alt="Termas del Salado en General Belgrano"
-                    fill
-                    sizes="(max-width: 700px) 100vw, 48vw"
-                  />
-                </figure>
-                <div>
-                  <h3>Termas del Salado</h3>
-                  <p>
-                    Una alternativa para sumar descanso y una experiencia termal a la
-                    escapada, especialmente cuando el plan pide ir más despacio.
-                  </p>
-                </div>
-              </article>
-              <article className="destination-card reveal">
-                <figure className="image-frame">
-                  <Image
-                    src="/images/general-belgrano/bosque-encantado.webp"
-                    alt="Bosque Encantado de General Belgrano"
-                    fill
-                    sizes="(max-width: 700px) 100vw, 48vw"
-                  />
-                </figure>
-                <div>
-                  <h3>Bosque Encantado</h3>
-                  <p>
-                    Un paseo entre vegetación y senderos para completar el viaje con más
-                    aire libre y otro paisaje de General Belgrano.
-                  </p>
-                </div>
-              </article>
+              <Link className="text-link destination-guide-link" href="/para-conocer">
+                Lugares para conocer <ArrowUpRight aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </section>
