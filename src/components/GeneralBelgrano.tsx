@@ -1,42 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-
-type Attraction = {
-  name: string;
-  description: string;
-  href: string;
-  image?: {
-    src: string;
-    alt: string;
-    objectPosition?: string;
-  };
-};
-
-const attractions: Attraction[] = [
-  {
-    name: "Termas del Salado",
-    description:
-      "Un espacio termal para relajarse y sumar una experiencia distinta durante la visita a General Belgrano.",
-    href: "https://share.google/TbrwB7rDFMfTW1iP4",
-    image: {
-      src: "/images/general-belgrano/termas-del-salado.webp",
-      alt: "Termas del Salado en General Belgrano",
-      objectPosition: "center 58%",
-    },
-  },
-  {
-    name: "Bosque Encantado",
-    description:
-      "Un paseo entre naturaleza y senderos, ideal para disfrutar General Belgrano con más calma.",
-    href: "https://share.google/KdC14zxLpOg0G6goV",
-    image: {
-      src: "/images/general-belgrano/bosque-encantado.webp",
-      alt: "Bosque Encantado de General Belgrano",
-      objectPosition: "center",
-    },
-  },
-];
+import { AttractionsBlock } from "@/components/AttractionsBlock";
 
 export function GeneralBelgrano() {
   return (
@@ -53,17 +18,22 @@ export function GeneralBelgrano() {
               Río Salado y recorrer su paseo costanero. Un cambio de aire cerca, con
               naturaleza y tiempo para mirar alrededor.
             </p>
-            <a
-              className="text-link"
-              href="https://generalbelgrano.tur.ar/que-visitar"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Turismo en General Belgrano <ArrowUpRight aria-hidden="true" />
-            </a>
-            <Link className="text-link" href="/general-belgrano">
-              Guía para tu escapada <ArrowUpRight aria-hidden="true" />
-            </Link>
+            <div className="destination-links">
+              <a
+                className="text-link"
+                href="https://generalbelgrano.tur.ar/que-visitar"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Turismo en General Belgrano <ArrowUpRight aria-hidden="true" />
+              </a>
+              <Link className="text-link" href="/general-belgrano">
+                Guía para tu escapada <ArrowUpRight aria-hidden="true" />
+              </Link>
+              <Link className="text-link" href="/agenda">
+                Agenda cultural <ArrowUpRight aria-hidden="true" />
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -98,56 +68,7 @@ export function GeneralBelgrano() {
           </div>
         </div>
 
-        <div className="destination-attractions" aria-labelledby="attractions-title">
-          <div className="destination-attractions-heading reveal">
-            <p className="eyebrow">Para conocer</p>
-            <h3 id="attractions-title">Dos propuestas para sumar al viaje</h3>
-          </div>
-
-          {attractions.map((attraction, index) => {
-            const number = String(index + 1).padStart(2, "0");
-
-            return (
-              <article
-                className={`destination-attraction${index % 2 ? " is-reversed" : ""}`}
-                key={attraction.name}
-              >
-                {attraction.image ? (
-                  <figure className="image-frame destination-attraction-visual reveal">
-                    <Image
-                      src={attraction.image.src}
-                      alt={attraction.image.alt}
-                      fill
-                      sizes="(max-width: 900px) 100vw, 58vw"
-                      style={{ objectPosition: attraction.image.objectPosition }}
-                    />
-                  </figure>
-                ) : (
-                  <div
-                    className="destination-attraction-visual destination-attraction-number reveal"
-                    aria-hidden="true"
-                  >
-                    <span>{number}</span>
-                  </div>
-                )}
-
-                <div className="destination-attraction-copy reveal">
-                  <p className="eyebrow">Escapada {number}</p>
-                  <h4>{attraction.name}</h4>
-                  <p>{attraction.description}</p>
-                  <a
-                    className="text-link"
-                    href={attraction.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Ver ubicación <ArrowUpRight aria-hidden="true" />
-                  </a>
-                </div>
-              </article>
-            );
-          })}
-        </div>
+        <AttractionsBlock />
       </div>
     </section>
   );

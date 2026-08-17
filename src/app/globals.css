@@ -978,7 +978,11 @@ img {
   color: var(--muted);
 }
 
-.destination-copy .text-link {
+.destination-links {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.35rem;
   margin-top: 1rem;
 }
 
@@ -1021,6 +1025,10 @@ img {
   margin-top: clamp(7rem, 12vw, 12rem);
 }
 
+.destination-attractions.is-standalone {
+  margin-top: 0;
+}
+
 .destination-attractions-heading {
   display: flex;
   align-items: flex-start;
@@ -1034,6 +1042,7 @@ img {
   margin: 0;
 }
 
+.destination-attractions-heading h2,
 .destination-attractions-heading h3 {
   max-width: 42rem;
   margin: 0;
@@ -1080,6 +1089,7 @@ img {
   justify-self: center;
 }
 
+.destination-attraction-copy h3,
 .destination-attraction-copy h4 {
   margin: 0;
   color: var(--forest);
@@ -1109,61 +1119,14 @@ img {
   grid-row: 1;
 }
 
+.destination-attractions.is-standalone .destination-attraction:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
 /* Recurring events */
 .events-section {
   background: var(--cream);
-}
-
-.agenda-preview {
-  padding-block: clamp(5rem, 8vw, 8rem);
-  background: var(--forest);
-  color: var(--warm-white);
-}
-
-.agenda-preview-grid {
-  display: grid;
-  min-height: clamp(28rem, 42vw, 37rem);
-  align-items: center;
-  grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.95fr);
-  gap: clamp(3rem, 8vw, 8rem);
-}
-
-.agenda-preview-image {
-  height: 100%;
-  min-height: 28rem;
-}
-
-.agenda-preview-image figcaption {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  padding: 0.6rem 0.85rem;
-  background: rgba(32, 56, 42, 0.88);
-  color: rgba(255, 252, 245, 0.78);
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.agenda-preview-copy {
-  max-width: 36rem;
-}
-
-.agenda-preview-copy h2 {
-  margin: 0;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(3.2rem, 5.4vw, 5.8rem);
-  font-weight: 400;
-  line-height: 0.94;
-  letter-spacing: -0.04em;
-  text-wrap: balance;
-}
-
-.agenda-preview-copy > p:not(.eyebrow) {
-  max-width: 31rem;
-  margin: 1.8rem 0 2.2rem;
-  color: rgba(255, 252, 245, 0.74);
 }
 
 .agenda-hero {
@@ -2121,38 +2084,6 @@ img {
   color: var(--muted);
 }
 
-.destination-cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(1.5rem, 3vw, 3rem);
-}
-
-.destination-card {
-  background: var(--warm-white);
-}
-
-.destination-card figure {
-  min-height: 29rem;
-}
-
-.destination-card > div {
-  padding: clamp(1.5rem, 3vw, 2.8rem);
-}
-
-.destination-card h3 {
-  margin: 0;
-  color: var(--forest);
-  font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(2.4rem, 4vw, 4rem);
-  font-weight: 400;
-  line-height: 0.96;
-}
-
-.destination-card p {
-  margin: 1rem 0 0;
-  color: var(--muted);
-}
-
 .destination-cta {
   background: var(--forest);
   color: var(--warm-white);
@@ -2698,7 +2629,6 @@ img {
   .destination-header,
   .destination-images,
   .events-intro,
-  .agenda-preview-grid,
   .location-grid,
   .detail-intro-grid,
   .destination-guide-grid,
@@ -2817,15 +2747,6 @@ img {
 
   .events-intro-copy {
     max-width: 38rem;
-  }
-
-  .agenda-preview-grid {
-    gap: 3rem;
-  }
-
-  .agenda-preview-image {
-    height: 64vw;
-    min-height: 26rem;
   }
 
   .events-month {
@@ -3170,15 +3091,6 @@ img {
     gap: 2.5rem;
   }
 
-  .agenda-preview-image {
-    height: 82vw;
-    min-height: 22rem;
-  }
-
-  .agenda-preview-copy h2 {
-    font-size: clamp(3rem, 14vw, 4.8rem);
-  }
-
   .agenda-hero {
     min-height: 42rem;
   }
@@ -3210,14 +3122,6 @@ img {
 
   .destination-guide-image {
     min-height: 80vw;
-  }
-
-  .destination-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .destination-card figure {
-    min-height: 85vw;
   }
 
   .destination-cta-actions {

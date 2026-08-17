@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { AttractionsBlock } from "@/components/AttractionsBlock";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { SITE_URL } from "@/lib/site-url";
@@ -118,51 +119,11 @@ export default function GeneralBelgranoPage() {
 
         <section className="section destination-guide is-warm" aria-labelledby="attractions-title">
           <div className="container">
-            <div className="section-heading reveal">
-              <p className="eyebrow">Dos clásicos</p>
-              <h2 id="attractions-title">Termas y naturaleza</h2>
-              <p className="section-description">
-                Dos propuestas conocidas del destino que suman planes diferentes a la
-                visita. Antes de ir, conviene confirmar días, horarios y condiciones en
-                los canales oficiales.
-              </p>
-            </div>
-            <div className="destination-cards">
-              <article className="destination-card reveal">
-                <figure className="image-frame">
-                  <Image
-                    src="/images/general-belgrano/termas-del-salado.webp"
-                    alt="Termas del Salado en General Belgrano"
-                    fill
-                    sizes="(max-width: 700px) 100vw, 48vw"
-                  />
-                </figure>
-                <div>
-                  <h3>Termas del Salado</h3>
-                  <p>
-                    Una alternativa para sumar descanso y una experiencia termal a la
-                    escapada, especialmente cuando el plan pide ir más despacio.
-                  </p>
-                </div>
-              </article>
-              <article className="destination-card reveal">
-                <figure className="image-frame">
-                  <Image
-                    src="/images/general-belgrano/bosque-encantado.webp"
-                    alt="Bosque Encantado de General Belgrano"
-                    fill
-                    sizes="(max-width: 700px) 100vw, 48vw"
-                  />
-                </figure>
-                <div>
-                  <h3>Bosque Encantado</h3>
-                  <p>
-                    Un paseo entre vegetación y senderos para completar el viaje con más
-                    aire libre y otro paisaje de General Belgrano.
-                  </p>
-                </div>
-              </article>
-            </div>
+            <AttractionsBlock
+              headingLevel="h2"
+              itemHeadingLevel="h3"
+              standalone
+            />
           </div>
         </section>
 

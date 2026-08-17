@@ -82,10 +82,17 @@ test("opens the private admin route from the footer", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Administración" })).toBeVisible();
 });
 
-test("shows the featured General Belgrano attractions", async ({ page }) => {
+test("integrates each featured attraction once inside the home destination", async ({ page }) => {
   await page.goto("/#general-belgrano");
 
   const section = page.locator("#general-belgrano");
+  await expect(section.locator(".destination-attractions")).toHaveCount(1);
+  await expect(section.getByRole("article")).toHaveCount(2);
+  await expect(
+    section.getByRole("heading", { name: "Dos propuestas para sumar al viaje" }),
+  ).toBeVisible();
+  await expect(page.locator("main > .destination-attractions")).toHaveCount(0);
+
   const attractions = [
     {
       name: "Termas del Salado",
@@ -100,6 +107,7 @@ test("shows the featured General Belgrano attractions", async ({ page }) => {
   ];
 
   for (const attraction of attractions) {
+    await expect(page.getByRole("heading", { name: attraction.name })).toHaveCount(1);
     const article = section
       .getByRole("article")
       .filter({ has: page.getByRole("heading", { name: attraction.name }) });
@@ -118,10 +126,10 @@ test("shows the featured General Belgrano attractions", async ({ page }) => {
   }
 });
 
-test("replaces the home event journey with a compact agenda invitation", async ({ page }) => {
-  await page.goto("/#eventos");
+test("removes the home agenda banner and links to agenda from the destination", async ({ page }) => {
+  await page.goto("/");
 
-  const section = page.locator("#eventos");
+  const destination = page.locator("#general-belgrano");
   const expectedEvents = [
     "Festival Morfi",
     "Festival Mayor de Tango y Folklore",
@@ -133,22 +141,87 @@ test("replaces the home event journey with a compact agenda invitation", async (
     "Fiestas Patronales de la Inmaculada Concepción",
   ];
 
+  await expect(page.locator("#eventos")).toHaveCount(0);
+  await expect(page.locator(".agenda-preview")).toHaveCount(0);
   await expect(
-    section.getByRole("heading", { name: "General Belgrano, todo el año" }),
-  ).toBeVisible();
-  await expect(section.getByRole("link", { name: "Ver agenda cultural" })).toHaveAttribute(
-    "href",
-    "/agenda",
-  );
-  await expect(section.getByRole("article")).toHaveCount(0);
+    page.getByRole("heading", { name: "General Belgrano, todo el año" }),
+  ).toHaveCount(0);
 
   for (const eventName of expectedEvents) {
     await expect(page.getByRole("heading", { name: eventName })).toHaveCount(0);
   }
 
-  await section.getByRole("link", { name: "Ver agenda cultural" }).click();
+  const agendaLink = destination.getByRole("link", { name: "Agenda cultural" });
+  await expect(agendaLink).toBeVisible();
+  await expect(agendaLink).toHaveAttribute("href", "/agenda");
+  await agendaLink.click();
   await expect(page).toHaveURL(/\/agenda$/);
   await expect(page.getByRole("heading", { name: "Agenda cultural", level: 1 })).toBeVisible();
+});
+
+test("reuses the editorial attractions block in the destination guide", async ({ page }) => {
+  await page.goto("/general-belgrano");
+
+  await expect(page.getByText("Dos clásicos", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Termas y naturaleza" })).toHaveCount(0);
+  await expect(page.locator(".destination-cards")).toHaveCount(0);
+
+  const attractions = page.locator(".destination-attractions");
+  await expect(
+    attractions.getByRole("heading", { name: "Dos propuestas para sumar al viaje" }),
+  ).toBeVisible();
+  await expect(attractions.getByRole("article")).toHaveCount(2);
+  await expect(attractions.getByRole("heading", { name: "Termas del Salado" })).toBeVisible();
+  await expect(attractions.getByRole("heading", { name: "Bosque Encantado" })).toBeVisible();
+});
+
+test("keeps the integrated destination natural across target responsive widths", async ({ page }) => {
+  for (const width of [375, 390, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: width < 768 ? 844 : 900 });
+    await page.goto("/#general-belgrano");
+
+    const section = page.locator("#general-belgrano");
+    const lastPhoto = section.getByRole("img", {
+      name: "Bosque Encantado de General Belgrano",
+    });
+    await lastPhoto.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() => lastPhoto.evaluate((image) => (image as HTMLImageElement).naturalWidth))
+      .toBeGreaterThan(0);
+
+    const layout = await section.evaluate((element) => {
+      const sectionBox = element.getBoundingClientRect();
+      const attractions = Array.from(
+        element.querySelectorAll<HTMLElement>(".destination-attraction"),
+      );
+      const links = Array.from(element.querySelectorAll<HTMLElement>(".text-link"));
+
+      return {
+        sectionInsideViewport:
+          sectionBox.left >= -0.5 && sectionBox.right <= window.innerWidth + 0.5,
+        attractionsInsideViewport: attractions.every((attraction) => {
+          const box = attraction.getBoundingClientRect();
+          return box.left >= -0.5 && box.right <= window.innerWidth + 0.5;
+        }),
+        linksInsideViewport: links.every((link) => {
+          const box = link.getBoundingClientRect();
+          return box.left >= -0.5 && box.right <= window.innerWidth + 0.5;
+        }),
+        noHorizontalOverflow:
+          document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      };
+    });
+
+    expect(layout, `destination layout at ${width}px`).toEqual({
+      sectionInsideViewport: true,
+      attractionsInsideViewport: true,
+      linksInsideViewport: true,
+      noHorizontalOverflow: true,
+    });
+    await expect(page.getByRole("heading", { name: "Termas del Salado" })).toHaveCount(1);
+    await expect(page.getByRole("heading", { name: "Bosque Encantado" })).toHaveCount(1);
+    await expect(page.locator("#eventos")).toHaveCount(0);
+  }
 });
 
 test("opens the agenda from the primary navigation on desktop and mobile", async ({
@@ -467,7 +540,11 @@ test("exposes only public canonical URLs in robots and sitemap", async ({ page }
   }
   expect(sitemapText).not.toContain("/admin/");
   expect(sitemapText).not.toContain("/api/");
+  expect(sitemapText).not.toContain("/para-conocer");
   expect(sitemapText).not.toContain("el-vagon.vercel.app");
+
+  const retiredAttractionsPage = await page.request.get("/para-conocer");
+  expect(retiredAttractionsPage.status()).toBe(404);
 });
 
 test("serves useful indexable accommodation and destination pages", async ({ page }) => {

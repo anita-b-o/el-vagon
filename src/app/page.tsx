@@ -1,5 +1,4 @@
 import { Accommodation } from "@/components/Accommodation";
-import { AgendaPreview } from "@/components/AgendaPreview";
 import { Amenities } from "@/components/Amenities";
 import { Experience } from "@/components/Experience";
 import { Footer } from "@/components/Footer";
@@ -64,7 +63,6 @@ export default function Home() {
         <Experience />
         <GallerySection />
         <GeneralBelgrano />
-        <AgendaPreview />
         <Location />
         <ReservationSection />
       </main>
