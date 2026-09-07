@@ -1,0 +1,61 @@
+import { describe, expect, it } from "vitest";
+import { culturalEventSchema } from "./cultural-events";
+
+const validEvent = {
+  slug: "fiesta-ejemplo",
+  name: "Fiesta de ejemplo",
+  category: "Cultura",
+  description: "Una descripción editorial válida.",
+  fact: null,
+  month: "Febrero",
+  monthOrder: 2,
+  timing: "Febrero · fechas variables",
+  startDate: null,
+  endDate: null,
+  dateConfirmed: false,
+  imagePath: null,
+  imageAlt: null,
+  externalUrl: "",
+  sourceUrl: "https://example.com/fuente",
+  isActive: true,
+  sortOrder: 3,
+};
+
+describe("cultural event domain", () => {
+  it("creates a valid recurring event without inventing dates", () => {
+    expect(culturalEventSchema.parse(validEvent).dateConfirmed).toBe(false);
+  });
+
+  it("requires a name", () => {
+    expect(() => culturalEventSchema.parse({ ...validEvent, name: "" })).toThrow();
+  });
+
+  it("requires both valid dates when the date is confirmed", () => {
+    expect(() => culturalEventSchema.parse({ ...validEvent, dateConfirmed: true })).toThrow(
+      "Una fecha confirmada requiere un rango válido",
+    );
+    expect(() => culturalEventSchema.parse({
+      ...validEvent,
+      dateConfirmed: true,
+      startDate: "2027-02-10",
+      endDate: "2027-02-12",
+    })).not.toThrow();
+  });
+
+  it("rejects dates marked as unconfirmed and invalid month order", () => {
+    expect(() => culturalEventSchema.parse({ ...validEvent, startDate: "2027-02-10" })).toThrow();
+    expect(() => culturalEventSchema.parse({ ...validEvent, monthOrder: 13 })).toThrow();
+  });
+
+  it("keeps the configured sort order", () => {
+    const events = [
+      culturalEventSchema.parse({ ...validEvent, slug: "b", sortOrder: 2 }),
+      culturalEventSchema.parse({ ...validEvent, slug: "a", sortOrder: 1 }),
+    ];
+    expect(events.toSorted((a, b) => a.sortOrder - b.sortOrder).map((event) => event.slug)).toEqual(["a", "b"]);
+  });
+
+  it("supports inactive events for soft delete", () => {
+    expect(culturalEventSchema.parse({ ...validEvent, isActive: false }).isActive).toBe(false);
+  });
+});

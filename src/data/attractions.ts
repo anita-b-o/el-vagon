@@ -2,6 +2,8 @@ export type Attraction = {
   name: string;
   description: string;
   href: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
   image?: {
     src: string;
     alt: string;
@@ -15,6 +17,8 @@ export const attractions: readonly Attraction[] = [
     description:
       "Un espacio termal para relajarse y sumar una experiencia distinta durante la visita a General Belgrano.",
     href: "https://share.google/TbrwB7rDFMfTW1iP4",
+    secondaryHref: "https://termasdelsalado.com.ar/",
+    secondaryLabel: "Ver calendario de apertura",
     image: {
       src: "/images/general-belgrano/termas-del-salado.webp",
       alt: "Termas del Salado en General Belgrano",

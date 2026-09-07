@@ -2158,6 +2158,54 @@ img {
   }
 }
 
+.event-admin-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.events-empty {
+  max-width: 36rem;
+  margin: 4rem 0;
+  color: var(--muted);
+}
+
+.event-admin-form label {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.event-admin-form input,
+.event-admin-form select,
+.event-admin-form textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 0;
+  background: var(--warm-white);
+  color: var(--ink);
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.event-admin-form textarea { min-height: 8rem; resize: vertical; }
+.event-admin-wide { grid-column: 1 / -1; }
+.event-admin-check { display: flex !important; align-items: center; gap: 0.6rem !important; }
+.event-admin-check input { width: auto; }
+.event-admin-list { display: grid; gap: 0.75rem; }
+.event-admin-list article { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--border); padding: 1rem 0; }
+.event-admin-list article > div:first-child { display: grid; gap: 0.25rem; }
+.event-admin-list span { color: var(--muted); font-size: 0.8rem; }
+
+@media (max-width: 700px) {
+  .event-admin-form { grid-template-columns: 1fr; }
+  .event-admin-wide { grid-column: auto; }
+  .event-admin-list article { align-items: flex-start; flex-direction: column; }
+}
+
 /* Private reservations panel */
 .admin-login {
   display: grid;

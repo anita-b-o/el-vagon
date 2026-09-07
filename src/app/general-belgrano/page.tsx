@@ -58,7 +58,7 @@ export default function GeneralBelgranoPage() {
               para armar una escapada con tiempo propio.
             </p>
             <div className="agenda-hero-actions">
-              <Link className="button button-light" href="/alojamiento">
+              <Link className="button button-light" href="/#experiencia">
                 Conocer El Vagón <ArrowUpRight aria-hidden="true" />
               </Link>
               <a
@@ -73,11 +73,11 @@ export default function GeneralBelgranoPage() {
           </div>
         </section>
 
-        <section className="section detail-intro" aria-labelledby="getaway-title">
+        <section className="section detail-intro" aria-labelledby="destination-intro-title">
           <div className="container detail-intro-grid">
             <div className="section-heading reveal">
               <p className="eyebrow">Una pausa cerca</p>
-              <h2 id="getaway-title">Una escapada a General Belgrano</h2>
+              <h2 id="destination-intro-title">General Belgrano, cerca y con tiempo</h2>
             </div>
             <div className="detail-prose reveal">
               <p>

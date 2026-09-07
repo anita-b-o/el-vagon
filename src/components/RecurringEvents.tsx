@@ -1,14 +1,19 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
-import { recurringEvents, recurringMonths } from "@/data/recurring-events";
+import type { CulturalEventRow } from "@/db/schema";
+import { recurringMonths } from "@/data/recurring-events";
 
 const officialAgendaUrl = "https://generalbelgrano.tur.ar/novedades";
 
 type RecurringEventsProps = {
   showIntro?: boolean;
+  events: CulturalEventRow[];
 };
 
-export function RecurringEvents({ showIntro = true }: RecurringEventsProps) {
+export function RecurringEvents({ showIntro = true, events }: RecurringEventsProps) {
+  const visibleMonths = recurringMonths.filter((month) =>
+    events.some((event) => event.month === month.name),
+  );
   return (
     <section
       id="eventos"
@@ -33,7 +38,7 @@ export function RecurringEvents({ showIntro = true }: RecurringEventsProps) {
 
         <nav className="events-month-nav reveal" aria-label="Recorrer eventos por mes">
           <div className="events-month-nav-track">
-            {recurringMonths.map((month) => (
+            {visibleMonths.map((month) => (
               <a href={`#eventos-${month.id}`} key={month.id}>
                 {month.shortLabel}
               </a>
@@ -41,9 +46,12 @@ export function RecurringEvents({ showIntro = true }: RecurringEventsProps) {
           </div>
         </nav>
 
+        {events.length === 0 ? (
+          <p className="events-empty">La agenda cultural está en actualización. Consultá la agenda oficial para conocer las próximas fechas.</p>
+        ) : null}
         <div className="events-timeline">
-          {recurringMonths.map((month) => {
-            const monthEvents = recurringEvents.filter((event) => event.month === month.name);
+          {visibleMonths.map((month) => {
+            const monthEvents = events.filter((event) => event.month === month.name);
 
             return (
               <section
@@ -62,7 +70,7 @@ export function RecurringEvents({ showIntro = true }: RecurringEventsProps) {
 
                 <div className="events-month-list">
                   {monthEvents.map((event) => {
-                    const eventIndex = recurringEvents.findIndex(
+                    const eventIndex = events.findIndex(
                       (candidate) => candidate.slug === event.slug,
                     );
                     const number = String(eventIndex + 1).padStart(2, "0");
@@ -70,22 +78,22 @@ export function RecurringEvents({ showIntro = true }: RecurringEventsProps) {
                     return (
                       <article
                         className={`event-story${eventIndex % 2 ? " is-reversed" : ""}${
-                          event.image ? " has-image" : " is-typographic"
+                          event.imagePath ? " has-image" : " is-typographic"
                         }`}
                         data-event-slug={event.slug}
                         key={event.slug}
                       >
-                        {event.image ? (
+                        {event.imagePath ? (
                           <figure className="event-story-visual event-story-image image-frame reveal">
                             <Image
-                              src={event.image.src}
-                              alt={event.image.alt}
+                              src={event.imagePath}
+                              alt={event.imageAlt ?? event.name}
                               fill
                               sizes="(max-width: 900px) 100vw, 54vw"
                               loading="lazy"
-                              style={{ objectPosition: event.image.objectPosition }}
+                              style={{ objectPosition: "center" }}
                             />
-                            <figcaption>{event.image.sourceLabel}</figcaption>
+                            <figcaption>{event.sourceUrl ? "Fuente oficial" : "Archivo de El Vagón"}</figcaption>
                           </figure>
                         ) : (
                           <div
@@ -103,6 +111,11 @@ export function RecurringEvents({ showIntro = true }: RecurringEventsProps) {
                           <p className="event-story-category">{event.category}</p>
                           <p className="event-story-description">{event.description}</p>
                           {event.fact ? <p className="event-story-fact">{event.fact}</p> : null}
+                          {event.externalUrl ? (
+                            <a className="text-link" href={event.externalUrl} target="_blank" rel="noopener noreferrer">
+                              Más información <ArrowUpRight aria-hidden="true" />
+                            </a>
+                          ) : null}
                         </div>
                       </article>
                     );

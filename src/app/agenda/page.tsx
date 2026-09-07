@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { RecurringEvents } from "@/components/RecurringEvents";
 import { SITE_URL } from "@/lib/site-url";
+import { getPublicCulturalEvents } from "@/lib/server/cultural-events";
 
 const title = "Agenda cultural de General Belgrano | El Vagón";
 const description =
@@ -35,7 +36,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AgendaPage() {
+export const dynamic = "force-dynamic";
+
+export default async function AgendaPage() {
+  const events = await getPublicCulturalEvents();
   return (
     <>
       <a className="skip-link" href="#contenido">
@@ -74,7 +78,7 @@ export default function AgendaPage() {
             </div>
           </div>
         </section>
-        <RecurringEvents showIntro={false} />
+        <RecurringEvents showIntro={false} events={events} />
       </main>
       <Footer />
     </>
