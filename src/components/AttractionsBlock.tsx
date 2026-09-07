@@ -67,6 +67,16 @@ export function AttractionsBlock({
               >
                 Ver ubicación <ArrowUpRight aria-hidden="true" />
               </a>
+              {attraction.secondaryHref && attraction.secondaryLabel ? (
+                <a
+                  className="text-link"
+                  href={attraction.secondaryHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {attraction.secondaryLabel} <ArrowUpRight aria-hidden="true" />
+                </a>
+              ) : null}
             </div>
           </article>
         );

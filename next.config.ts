@@ -5,12 +5,15 @@ const nextConfig: NextConfig = {
   agentRules: false,
   trailingSlash: false,
   async redirects() {
-    return ["elvagon.com.ar", "el-vagon.vercel.app"].map((host) => ({
+    return [
+      { source: "/alojamiento", destination: "/", permanent: true },
+      ...["elvagon.com.ar", "el-vagon.vercel.app"].map((host) => ({
       source: "/:path*",
       has: [{ type: "host" as const, value: host }],
       destination: `${SITE_URL}/:path*`,
       permanent: true,
-    }));
+      })),
+    ];
   },
   async headers() {
     return [

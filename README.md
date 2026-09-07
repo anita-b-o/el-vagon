@@ -62,4 +62,6 @@ Puede importarse en Airbnb y Booking. La propagación iCal depende de los interv
 
 Las migraciones versionadas viven en `drizzle/` y se aplican con `npm run db:migrate`. El script registra cada archivo en `el_vagon_schema_migrations`.
 
+La agenda cultural se administra desde `/admin/eventos` con la misma cuenta Google autorizada que `/admin/reservas`. La migración `0002_cultural_events.sql` crea la tabla y carga de forma idempotente los ocho eventos existentes (`ON CONFLICT (slug) DO NOTHING`). Las imágenes se gestionan inicialmente indicando una ruta pública existente (por ejemplo `/images/events/festival-morfi.webp`); no se agregan uploads ni binarios en PostgreSQL hasta configurar un storage dedicado.
+
 Vercel ejecuta diariamente `/api/cron/anonymize`. A los 12 meses elimina nombre y consulta; las pendientes vencidas pasan primero a `REJECTED`. El endpoint requiere `CRON_SECRET`.

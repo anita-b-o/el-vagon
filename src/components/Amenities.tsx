@@ -4,6 +4,7 @@ import {
   Bike,
   CarFront,
   ChefHat,
+  Flame,
   Leaf,
   MoonStar,
   PawPrint,
@@ -19,6 +20,7 @@ const icons = {
   moon: MoonStar,
   bath: Bath,
   cooking: ChefHat,
+  grill: Flame,
   wifi: Wifi,
   waves: Waves,
   car: CarFront,
@@ -50,4 +52,3 @@ export function Amenities() {
     </section>
   );
 }
-

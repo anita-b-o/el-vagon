@@ -1,7 +1,14 @@
 export type RecurringMonthName =
   | "Enero"
   | "Febrero"
+  | "Marzo"
+  | "Abril"
+  | "Mayo"
+  | "Junio"
+  | "Julio"
   | "Agosto"
+  | "Septiembre"
+  | "Octubre"
   | "Noviembre"
   | "Diciembre";
 
@@ -38,7 +45,14 @@ export type RecurringEvent = {
 export const recurringMonths = [
   { id: "enero", name: "Enero", shortLabel: "ENE" },
   { id: "febrero", name: "Febrero", shortLabel: "FEB" },
+  { id: "marzo", name: "Marzo", shortLabel: "MAR" },
+  { id: "abril", name: "Abril", shortLabel: "ABR" },
+  { id: "mayo", name: "Mayo", shortLabel: "MAY" },
+  { id: "junio", name: "Junio", shortLabel: "JUN" },
+  { id: "julio", name: "Julio", shortLabel: "JUL" },
   { id: "agosto", name: "Agosto", shortLabel: "AGO" },
+  { id: "septiembre", name: "Septiembre", shortLabel: "SEP" },
+  { id: "octubre", name: "Octubre", shortLabel: "OCT" },
   { id: "noviembre", name: "Noviembre", shortLabel: "NOV" },
   { id: "diciembre", name: "Diciembre", shortLabel: "DIC" },
 ] as const satisfies ReadonlyArray<{

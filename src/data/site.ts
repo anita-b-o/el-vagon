@@ -32,13 +32,12 @@ export const siteConfig = {
 
 export const navigation = [
   { label: "El Vagón", href: "/" },
-  { label: "El alojamiento", href: "/alojamiento" },
   { label: "Experiencia", href: "/#experiencia" },
   { label: "Galería", href: "/#galeria" },
-  { label: "General Belgrano", href: "/general-belgrano" },
-  { label: "Agenda", href: "/agenda" },
   { label: "Ubicación", href: "/#ubicacion" },
   { label: "Disponibilidad", href: "/#reservas" },
+  { label: "General Belgrano", href: "/general-belgrano" },
+  { label: "Agenda", href: "/agenda" },
 ] as const;
 
 export const amenities = [
@@ -52,6 +51,7 @@ export const amenities = [
   { label: "Estacionamiento", icon: "car" },
   { label: "Bicicletas", icon: "bike" },
   { label: "Jardín", icon: "leaf" },
+  { label: "Parrilla", icon: "grill" },
   { label: "No se permiten mascotas", icon: "paw" },
 ] as const;
 
@@ -64,39 +64,9 @@ export type GalleryImage = {
 
 export const galleryImages: GalleryImage[] = [
   {
-    src: "/images/el-vagon/fachada-galeria.webp",
-    alt: "Galería de madera de El Vagón rodeada por plantas",
-    caption: "La galería, entre madera y verde",
-    layout: "portrait",
-  },
-  {
-    src: "/images/el-vagon/estar-comedor.webp",
-    alt: "Espacio de estar y comedor de El Vagón",
-    caption: "Un interior simple y cálido",
-    layout: "portrait",
-  },
-  {
-    src: "/images/el-vagon/pileta-atardecer.webp",
-    alt: "Pileta exterior de El Vagón al atardecer",
-    caption: "La pileta entre árboles",
-    layout: "landscape",
-  },
-  {
-    src: "/images/el-vagon/dormitorio.webp",
-    alt: "Dormitorio con cama doble de El Vagón",
-    caption: "El dormitorio",
-    layout: "portrait",
-  },
-  {
     src: "/images/el-vagon/galeria-color.webp",
     alt: "Galería exterior con ventanas de colores y vegetación",
     caption: "Colores y detalles de la casa",
-    layout: "portrait",
-  },
-  {
-    src: "/images/el-vagon/cocina.webp",
-    alt: "Cocina equipada del alojamiento",
-    caption: "La cocina",
     layout: "portrait",
   },
   {
@@ -106,27 +76,15 @@ export const galleryImages: GalleryImage[] = [
     layout: "portrait",
   },
   {
-    src: "/images/el-vagon/bano.webp",
-    alt: "Baño privado del alojamiento",
-    caption: "El baño privado",
-    layout: "portrait",
-  },
-  {
     src: "/images/el-vagon/ventanas-jardin.webp",
     alt: "Ventanas de colores vistas desde el jardín",
     caption: "Detalles que aparecen entre el verde",
     layout: "portrait",
   },
   {
-    src: "/images/general-belgrano/rio-salado.webp",
-    alt: "Vista del Río Salado en General Belgrano",
-    caption: "Río Salado, General Belgrano",
-    layout: "landscape",
-  },
-  {
-    src: "/images/general-belgrano/costanera-atardecer.webp",
-    alt: "Paseo costanero de General Belgrano al atardecer",
-    caption: "La costanera al final del día",
+    src: "/images/el-vagon/detalle-exterior.webp",
+    alt: "Detalle exterior de madera de El Vagón",
+    caption: "Detalles de El Vagón",
     layout: "portrait",
   },
 ];

@@ -29,8 +29,8 @@ export function Footer() {
         </div>
         <div className="footer-links">
           <p className="eyebrow eyebrow-light">Más información</p>
-          <Link href="/alojamiento">
-            El alojamiento <ArrowUpRight aria-hidden="true" />
+          <Link href="/#experiencia">
+            La experiencia <ArrowUpRight aria-hidden="true" />
           </Link>
           <Link href="/general-belgrano">
             General Belgrano <ArrowUpRight aria-hidden="true" />

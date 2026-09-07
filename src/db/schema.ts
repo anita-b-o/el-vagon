@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import {
   check,
+  boolean,
   date,
   integer,
   jsonb,
@@ -26,6 +27,37 @@ export const externalCalendarSource = pgEnum("external_calendar_source", [
   "AIRBNB",
   "BOOKING",
 ]);
+
+export const culturalEvents = pgTable(
+  "cultural_events",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    slug: text("slug").notNull(),
+    name: text("name").notNull(),
+    category: text("category").notNull(),
+    description: text("description").notNull(),
+    fact: text("fact"),
+    month: text("month").notNull(),
+    monthOrder: smallint("month_order").notNull(),
+    timing: text("timing").notNull(),
+    startDate: date("start_date", { mode: "string" }),
+    endDate: date("end_date", { mode: "string" }),
+    dateConfirmed: boolean("date_confirmed").default(false).notNull(),
+    imagePath: text("image_path"),
+    imageAlt: text("image_alt"),
+    externalUrl: text("external_url"),
+    sourceUrl: text("source_url"),
+    isActive: boolean("is_active").default(true).notNull(),
+    sortOrder: integer("sort_order").default(0).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("cultural_events_slug_idx").on(table.slug),
+    check("cultural_events_month_order_check", sql`${table.monthOrder} between 1 and 12`),
+    check("cultural_events_dates_check", sql`(${table.dateConfirmed} = false and ${table.startDate} is null and ${table.endDate} is null) or (${table.dateConfirmed} = true and ${table.startDate} is not null and ${table.endDate} is not null and ${table.endDate} >= ${table.startDate})`),
+  ],
+);
 
 export type StoredDateRange = {
   startDate: string;
@@ -128,4 +160,4 @@ export const externalCalendarSnapshots = pgTable(
 
 export type ReservationRequestRow = typeof reservationRequests.$inferSelect;
 export type AvailabilityBlockRow = typeof availabilityBlocks.$inferSelect;
-
+export type CulturalEventRow = typeof culturalEvents.$inferSelect;

@@ -37,8 +37,8 @@ test("creates a pending request before handing off to WhatsApp", async ({ page }
   await page.route("https://wa.me/**", (route) => route.abort("blockedbyclient"));
 
   await page.goto("/#reservas");
-  await page.getByRole("button", { name: /18 de agosto de 2026/i }).click();
-  await page.getByRole("button", { name: /20 de agosto de 2026/i }).click();
+  await page.getByRole("button", { name: /18 de septiembre de 2026/i }).click();
+  await page.getByRole("button", { name: /20 de septiembre de 2026/i }).click();
   await page.getByLabel("Nombre completo").fill("Ana Pérez");
   await page.getByLabel("Cantidad de personas").selectOption("2");
   await page.getByRole("textbox", { name: "Consulta Opcional" }).fill("Llegamos después de las 18 hs");
@@ -48,8 +48,8 @@ test("creates a pending request before handing off to WhatsApp", async ({ page }
   expect(submitted).toMatchObject({
     fullName: "Ana Pérez",
     guestCount: "2",
-    checkIn: "2026-08-18",
-    checkOut: "2026-08-20",
+    checkIn: "2026-09-18",
+    checkOut: "2026-09-20",
     question: "Llegamos después de las 18 hs",
   });
 });
@@ -60,6 +60,10 @@ test("keeps the admin panel private and the calendar export token-protected", as
   await expect(page).toHaveURL(/\/admin\/login/);
   await expect(page.getByRole("heading", { name: "Administración" })).toBeVisible();
   await expect(page.getByText(/Ingresá con la cuenta de Google autorizada/)).toHaveCount(0);
+
+  const eventsAdmin = await page.request.get("/admin/eventos");
+  expect(eventsAdmin.status()).toBeLessThan(400);
+  expect(eventsAdmin.url()).toMatch(/\/admin\/login/);
 
   const ics = await page.request.get("/api/calendar/el-vagon.ics?token=incorrecto");
   expect(ics.status()).toBe(404);
@@ -191,23 +195,21 @@ test("keeps the shortened home destination natural across target responsive widt
 test("uses the same conceptual navigation order on desktop and mobile", async ({ page }) => {
   const expectedLabels = [
     "El Vagón",
-    "El alojamiento",
     "Experiencia",
     "Galería",
-    "General Belgrano",
-    "Agenda",
     "Ubicación",
     "Disponibilidad",
+    "General Belgrano",
+    "Agenda",
   ];
   const expectedHrefs = [
     "/",
-    "/alojamiento",
     "/#experiencia",
     "/#galeria",
-    "/general-belgrano",
-    "/agenda",
     "/#ubicacion",
     "/#reservas",
+    "/general-belgrano",
+    "/agenda",
   ];
 
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -294,6 +296,7 @@ test("opens the agenda from the primary navigation on desktop and mobile", async
 });
 
 test("presents the recurring General Belgrano events on the agenda page", async ({ page }) => {
+  test.skip(!process.env.DATABASE_URL, "requiere una base migrada");
   await page.goto("/agenda");
 
   await expect(page).toHaveTitle("Agenda cultural de General Belgrano | El Vagón");
@@ -367,6 +370,7 @@ test("presents the recurring General Belgrano events on the agenda page", async 
 });
 
 test("keeps the event journey usable across target responsive widths", async ({ page }) => {
+  test.skip(!process.env.DATABASE_URL, "requiere una base migrada");
   for (const width of [375, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: width < 768 ? 844 : 900 });
     await page.goto("/agenda");
@@ -409,6 +413,7 @@ test("keeps the event journey usable across target responsive widths", async ({ 
 });
 
 test("supports month navigation, keyboard focus and reduced motion", async ({ page }) => {
+  test.skip(!process.env.DATABASE_URL, "requiere una base migrada");
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/agenda");
 
@@ -569,7 +574,6 @@ test("exposes only public canonical URLs in robots and sitemap", async ({ page }
   const sitemapText = await sitemap.text();
   for (const url of [
     "https://www.elvagon.com.ar",
-    "https://www.elvagon.com.ar/alojamiento",
     "https://www.elvagon.com.ar/general-belgrano",
     "https://www.elvagon.com.ar/agenda",
   ]) {
@@ -584,25 +588,18 @@ test("exposes only public canonical URLs in robots and sitemap", async ({ page }
   expect(retiredAttractionsPage.status()).toBe(404);
 });
 
-test("serves useful indexable accommodation and destination pages", async ({ page }) => {
+test("serves useful indexable public pages and retires accommodation", async ({ page }) => {
   const browserErrors: string[] = [];
   page.on("pageerror", (error) => browserErrors.push(error.message));
   page.on("console", (message) => {
     if (message.type() === "error") browserErrors.push(message.text());
   });
 
-  const pages = [
-    {
-      path: "/alojamiento",
-      title: "Alojamiento para dos en General Belgrano | El Vagón",
-      heading: "Alojamiento para dos en General Belgrano",
-    },
-    {
+  const pages = [{
       path: "/general-belgrano",
       title: "Qué hacer en General Belgrano | El Vagón",
       heading: "Qué hacer en General Belgrano",
-    },
-  ];
+    }];
 
   for (const item of pages) {
     const response = await page.goto(item.path);
@@ -623,6 +620,10 @@ test("serves useful indexable accommodation and destination pages", async ({ pag
     );
     expect(hasHorizontalOverflow).toBe(false);
   }
+
+  const retired = await page.request.get("/alojamiento", { maxRedirects: 0 });
+  expect(retired.status()).toBe(308);
+  expect(retired.headers().location).toBe("/");
 
   expect(browserErrors).toEqual([]);
 });

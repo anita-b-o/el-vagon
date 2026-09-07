@@ -18,7 +18,7 @@ export function Intro() {
               y dejar que el día encuentre su propio ritmo.
             </p>
           </div>
-          <a className="text-link" href="#alojamiento">
+          <a className="text-link" href="#galeria">
             Conocé el espacio
           </a>
         </div>

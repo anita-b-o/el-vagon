@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { CalendarClock, LogOut, RefreshCw } from "lucide-react";
+import Link from "next/link";
 import { formatLocalDate, formatTimestampInArgentina, nightsBetween, parseLocalDate } from "@/lib/domain/dates";
 import {
   cancelRequestAction,
@@ -118,6 +119,7 @@ export function AdminDashboard({ requests, blocks, feeds, adminEmail }: Props) {
         <form action={signOutAction}>
           <button className="admin-quiet-button" type="submit"><LogOut aria-hidden="true" /> Salir</button>
         </form>
+        <Link className="admin-quiet-button" href="/admin/eventos">Eventos culturales</Link>
       </header>
 
       <div className="admin-summary">

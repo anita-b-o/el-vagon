@@ -10,7 +10,7 @@ export function GallerySection() {
           <SectionHeading
             eyebrow="Galería"
             title="Un poco de lo que te espera"
-            description="Recorré los espacios, el jardín y algunos paisajes de General Belgrano."
+            description="Recorré los espacios, el jardín y los detalles de El Vagón."
           />
           <p className="gallery-instruction">Tocá una imagen para verla completa.</p>
         </div>
