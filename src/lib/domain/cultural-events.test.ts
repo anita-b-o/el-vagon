@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { culturalEventSchema } from "./cultural-events";
+import { culturalEventImageAlt, culturalEventSchema, monthOrderFor, slugifyCulturalEventName } from "./cultural-events";
 
 const validEvent = {
   slug: "fiesta-ejemplo",
@@ -22,6 +22,15 @@ const validEvent = {
 };
 
 describe("cultural event domain", () => {
+  it("generates a URL-safe slug and descriptive image alt", () => {
+    expect(slugifyCulturalEventName("Fiesta de la Bondiola y la Tradición")).toBe("fiesta-de-la-bondiola-y-la-tradicion");
+    expect(culturalEventImageAlt("Festival Morfi")).toBe("Festival Morfi en General Belgrano");
+  });
+
+  it("derives the month order from the selected month", () => {
+    expect(monthOrderFor("Agosto")).toBe(8);
+  });
+
   it("creates a valid recurring event without inventing dates", () => {
     expect(culturalEventSchema.parse(validEvent).dateConfirmed).toBe(false);
   });

@@ -19,6 +19,11 @@ export function getAdminCulturalEvents() {
     .orderBy(asc(culturalEvents.monthOrder), asc(culturalEvents.sortOrder), asc(culturalEvents.name));
 }
 
+export async function getCulturalEvent(id: string) {
+  const rows = await getDb().select().from(culturalEvents).where(eq(culturalEvents.id, id)).limit(1);
+  return rows[0];
+}
+
 export async function createCulturalEvent(input: Omit<CulturalEventRow, "id" | "createdAt" | "updatedAt">) {
   await getDb().insert(culturalEvents).values(input);
 }

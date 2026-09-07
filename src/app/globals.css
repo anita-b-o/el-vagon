@@ -2193,6 +2193,9 @@ img {
 
 .event-admin-form textarea { min-height: 8rem; resize: vertical; }
 .event-admin-wide { grid-column: 1 / -1; }
+.event-admin-fieldset { display: grid; gap: 0.75rem; border: 0; margin: 0; padding: 0; }
+.event-admin-fieldset legend { padding: 0; color: var(--muted); font-size: 0.75rem; font-weight: 700; }
+.event-admin-dates { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .event-admin-check { display: flex !important; align-items: center; gap: 0.6rem !important; }
 .event-admin-check input { width: auto; }
 .event-admin-list { display: grid; gap: 0.75rem; }

@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/server/admin-auth";
-import { createCulturalEvent, deactivateCulturalEvent, deleteCulturalEvent, updateCulturalEvent } from "@/lib/server/cultural-events";
-import { culturalEventSchema } from "@/lib/domain/cultural-events";
+import { createCulturalEvent, deactivateCulturalEvent, deleteCulturalEvent, getCulturalEvent, updateCulturalEvent } from "@/lib/server/cultural-events";
+import { culturalEventImageAlt, culturalEventSchema, monthOrderFor, slugifyCulturalEventName } from "@/lib/domain/cultural-events";
 
 export type EventActionResult = { ok: true; message: string } | { ok: false; message: string };
 
@@ -14,25 +14,31 @@ function errorMessage(error: unknown) {
   return error instanceof Error && error.message ? error.message : "No pudimos guardar el evento.";
 }
 
-function parseInput(raw: unknown) {
+function parseInput(raw: unknown, existing?: Awaited<ReturnType<typeof getCulturalEvent>>) {
   const value = raw as Record<string, unknown>;
   return culturalEventSchema.parse({
     ...value,
-    fact: value.fact || null,
-    startDate: value.startDate || null,
-    endDate: value.endDate || null,
+    slug: existing?.slug ?? slugifyCulturalEventName(String(value.name ?? "")),
+    fact: existing?.fact ?? null,
+    monthOrder: value.monthOrder || monthOrderFor(String(value.month ?? "")),
+    timing: existing?.timing ?? String(value.month ?? ""),
+    startDate: value.dateConfirmed ? value.startDate || null : null,
+    endDate: value.dateConfirmed ? value.endDate || null : null,
     imagePath: value.imagePath || null,
-    imageAlt: value.imageAlt || null,
+    imageAlt: existing?.imageAlt ?? culturalEventImageAlt(String(value.name ?? "")),
     externalUrl: value.externalUrl || "",
-    sourceUrl: value.sourceUrl || "",
+    sourceUrl: existing?.sourceUrl || "",
   });
 }
 
 export async function saveCulturalEventAction(raw: unknown, id?: string): Promise<EventActionResult> {
   await requireAdmin();
   try {
-    const input = parseInput(raw);
-    if (id) await updateCulturalEvent(z.uuid().parse(id), input);
+    const parsedId = id ? z.uuid().parse(id) : undefined;
+    const existing = parsedId ? await getCulturalEvent(parsedId) : undefined;
+    if (parsedId && !existing) return { ok: false, message: "No encontramos ese evento." };
+    const input = parseInput(raw, existing);
+    if (parsedId) await updateCulturalEvent(parsedId, input);
     else await createCulturalEvent(input);
     revalidatePath("/agenda");
     revalidatePath("/admin/eventos");

@@ -2,6 +2,19 @@ import { z } from "zod";
 
 const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"] as const;
 
+export function slugifyCulturalEventName(name: string) {
+  return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 120);
+}
+
+export function culturalEventImageAlt(name: string) {
+  return `${name.trim()} en General Belgrano`;
+}
+
+export function monthOrderFor(month: string) {
+  const order = months.indexOf(month as (typeof months)[number]);
+  return order >= 0 ? order + 1 : 1;
+}
+
 export const culturalEventSchema = z.object({
   slug: z.string().trim().min(1).max(120).regex(/^[a-z0-9-]+$/),
   name: z.string().trim().min(1, "El nombre es obligatorio.").max(160),
