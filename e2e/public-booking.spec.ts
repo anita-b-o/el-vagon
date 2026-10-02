@@ -1,5 +1,32 @@
 import { expect, test } from "@playwright/test";
 
+function futureArgentinaDate(daysFromToday: number) {
+  const date = new Date();
+  date.setDate(date.getDate() + daysFromToday);
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Argentina/Buenos_Aires",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const value = (part: Intl.DateTimeFormatPartTypes) => parts.find(({ type }) => type === part)?.value ?? "";
+  return {
+    iso: `${value("year")}-${value("month")}-${value("day")}`,
+    accessibleName: new Intl.DateTimeFormat("es-AR", {
+      timeZone: "America/Argentina/Buenos_Aires",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(date),
+  };
+}
+
+async function chooseFutureDate(page: import("@playwright/test").Page, date: ReturnType<typeof futureArgentinaDate>) {
+  const button = page.getByRole("button", { name: new RegExp(`, ${date.accessibleName}$`, "i") });
+  if (await button.count() === 0) await page.getByRole("button", { name: "Ir al mes siguiente" }).click();
+  await button.click();
+}
+
 test.beforeEach(async ({ page }) => {
   if (process.env.VERCEL_SHARE_URL) {
     await page.goto(process.env.VERCEL_SHARE_URL);
@@ -21,6 +48,8 @@ test("shows the boutique availability experience", async ({ page }, testInfo) =>
 });
 
 test("creates a pending request before handing off to WhatsApp", async ({ page }) => {
+  const checkIn = futureArgentinaDate(7);
+  const checkOut = futureArgentinaDate(9);
   let submitted: Record<string, unknown> | null = null;
   await page.route("**/api/reservation-requests", async (route) => {
     submitted = route.request().postDataJSON() as Record<string, unknown>;
@@ -37,8 +66,8 @@ test("creates a pending request before handing off to WhatsApp", async ({ page }
   await page.route("https://wa.me/**", (route) => route.abort("blockedbyclient"));
 
   await page.goto("/#reservas");
-  await page.getByRole("button", { name: /18 de septiembre de 2026/i }).click();
-  await page.getByRole("button", { name: /20 de septiembre de 2026/i }).click();
+  await chooseFutureDate(page, checkIn);
+  await chooseFutureDate(page, checkOut);
   await page.getByLabel("Nombre completo").fill("Ana Pérez");
   await page.getByLabel("Cantidad de personas").selectOption("2");
   await page.getByRole("textbox", { name: "Consulta Opcional" }).fill("Llegamos después de las 18 hs");
@@ -48,8 +77,8 @@ test("creates a pending request before handing off to WhatsApp", async ({ page }
   expect(submitted).toMatchObject({
     fullName: "Ana Pérez",
     guestCount: "2",
-    checkIn: "2026-09-18",
-    checkOut: "2026-09-20",
+    checkIn: checkIn.iso,
+    checkOut: checkOut.iso,
     question: "Llegamos después de las 18 hs",
   });
 });

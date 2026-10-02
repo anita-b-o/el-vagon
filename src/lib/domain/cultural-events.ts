@@ -27,7 +27,7 @@ export const culturalEventSchema = z.object({
   startDate: z.string().trim().nullable(),
   endDate: z.string().trim().nullable(),
   dateConfirmed: z.boolean(),
-  imagePath: z.union([z.string().trim().regex(/^\//), z.literal("")]).nullable(),
+  imagePath: z.union([z.string().trim().regex(/^(\/|https:\/\/)/), z.literal("")]).nullable(),
   imageAlt: z.string().trim().max(300).nullable(),
   externalUrl: z.union([z.string().url(), z.literal("")]).transform((value) => value || null),
   sourceUrl: z.union([z.string().url(), z.literal("")]).transform((value) => value || null),

@@ -4,6 +4,9 @@ import { SITE_URL } from "./src/lib/site-url";
 const nextConfig: NextConfig = {
   agentRules: false,
   trailingSlash: false,
+  experimental: {
+    serverActions: { bodySizeLimit: "6mb" },
+  },
   async redirects() {
     return [
       { source: "/alojamiento", destination: "/", permanent: true },
@@ -29,6 +32,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
+    remotePatterns: [{ protocol: "https", hostname: "**.blob.vercel-storage.com" }],
   },
 };
 

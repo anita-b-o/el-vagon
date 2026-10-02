@@ -33,7 +33,12 @@ export async function updateCulturalEvent(id: string, input: Partial<Omit<Cultur
 }
 
 export async function deactivateCulturalEvent(id: string) {
-  await updateCulturalEvent(id, { isActive: false });
+  await setCulturalEventActive(id, false);
+}
+
+/** Changes publication state only; event content and its image are deliberately untouched. */
+export async function setCulturalEventActive(id: string, isActive: boolean) {
+  await updateCulturalEvent(id, { isActive });
 }
 
 export async function deleteCulturalEvent(id: string) {

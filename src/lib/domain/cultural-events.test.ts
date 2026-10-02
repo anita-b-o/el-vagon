@@ -35,6 +35,11 @@ describe("cultural event domain", () => {
     expect(culturalEventSchema.parse(validEvent).dateConfirmed).toBe(false);
   });
 
+  it("accepts existing local paths and Vercel Blob image URLs", () => {
+    expect(culturalEventSchema.parse({ ...validEvent, imagePath: "/images/events/existente.webp" }).imagePath).toContain("/images/");
+    expect(culturalEventSchema.parse({ ...validEvent, imagePath: "https://store.public.blob.vercel-storage.com/event-images/event.jpg" }).imagePath).toContain("blob.vercel-storage.com");
+  });
+
   it("requires a name", () => {
     expect(() => culturalEventSchema.parse({ ...validEvent, name: "" })).toThrow();
   });
