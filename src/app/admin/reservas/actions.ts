@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { signOut } from "@/auth";
 import { requireAdmin } from "@/lib/server/admin-auth";
 import {
   cancelConfirmedReservation,
@@ -62,8 +61,4 @@ export async function releaseManualBlockAction(blockId: string) {
 
 export async function refreshCalendarsAction() {
   return runAdminAction(forceRefreshExternalCalendars, "Calendarios actualizados.");
-}
-
-export async function signOutAction() {
-  await signOut({ redirectTo: "/admin/login" });
 }

@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
-import { CalendarClock, LogOut, RefreshCw } from "lucide-react";
-import Link from "next/link";
+import { CalendarClock, RefreshCw } from "lucide-react";
+import { AdminNav } from "@/components/AdminNav";
+import { AdminLogout } from "@/components/AdminLogout";
 import { formatLocalDate, formatTimestampInArgentina, nightsBetween, parseLocalDate } from "@/lib/domain/dates";
 import {
   cancelRequestAction,
@@ -12,7 +13,6 @@ import {
   refreshCalendarsAction,
   rejectRequestAction,
   releaseManualBlockAction,
-  signOutAction,
   type AdminActionResult,
 } from "./actions";
 
@@ -115,11 +115,9 @@ export function AdminDashboard({ requests, blocks, feeds, adminEmail }: Props) {
           <p className="eyebrow">Gestión privada</p>
           <h1>Reservas</h1>
           <p>{adminEmail}</p>
+          <AdminNav active="reservas" />
         </div>
-        <form action={signOutAction}>
-          <button className="admin-quiet-button" type="submit"><LogOut aria-hidden="true" /> Salir</button>
-        </form>
-        <Link className="admin-quiet-button" href="/admin/eventos">Eventos culturales</Link>
+        <AdminLogout />
       </header>
 
       <div className="admin-summary">

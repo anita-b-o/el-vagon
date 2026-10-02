@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
   updateCulturalEvent: vi.fn(),
   setCulturalEventActive: vi.fn(),
   deleteCulturalEvent: vi.fn(),
+  saveCulturalEventOrder: vi.fn(),
   uploadEventImage: vi.fn(),
   deleteManagedEventImage: vi.fn(),
   revalidatePath: vi.fn(),
@@ -20,13 +21,14 @@ vi.mock("@/lib/server/cultural-events", () => ({
   updateCulturalEvent: mocks.updateCulturalEvent,
   setCulturalEventActive: mocks.setCulturalEventActive,
   deleteCulturalEvent: mocks.deleteCulturalEvent,
+  saveCulturalEventOrder: mocks.saveCulturalEventOrder,
 }));
 vi.mock("@/lib/server/event-images", () => ({
   uploadEventImage: mocks.uploadEventImage,
   deleteManagedEventImage: mocks.deleteManagedEventImage,
 }));
 
-import { saveCulturalEventAction, setCulturalEventActiveAction } from "./actions";
+import { saveCulturalEventOrderAction, saveCulturalEventAction, setCulturalEventActiveAction } from "./actions";
 
 const eventId = "d8b807a2-871c-4cc8-b452-6c9254f17716";
 const oldImage = "https://store.public.blob.vercel-storage.com/event-images/old.jpg";
@@ -46,6 +48,7 @@ describe("event admin actions", () => {
     mocks.getCulturalEvent.mockResolvedValue(existing);
     mocks.updateCulturalEvent.mockResolvedValue(undefined);
     mocks.setCulturalEventActive.mockResolvedValue(undefined);
+    mocks.saveCulturalEventOrder.mockResolvedValue(undefined);
     mocks.deleteManagedEventImage.mockResolvedValue(undefined);
   });
 
@@ -110,5 +113,24 @@ describe("event admin actions", () => {
     expect(mocks.updateCulturalEvent).not.toHaveBeenCalled();
     expect(mocks.revalidatePath).toHaveBeenCalledWith("/agenda");
     expect(mocks.revalidatePath).toHaveBeenCalledWith("/admin/eventos");
+  });
+
+  it("persists final complete month groups and refreshes both the admin and public agenda", async () => {
+    await expect(saveCulturalEventOrderAction([{ month: 1, ids: [eventId] }])).resolves.toEqual({ ok: true, message: "Orden guardado" });
+    expect(mocks.saveCulturalEventOrder).toHaveBeenCalledWith([{ month: 1, ids: [eventId] }]);
+    expect(mocks.revalidatePath).toHaveBeenCalledWith("/agenda");
+    expect(mocks.revalidatePath).toHaveBeenCalledWith("/admin/eventos");
+  });
+
+  it("rejects duplicate IDs before writing an order", async () => {
+    const result = await saveCulturalEventOrderAction([{ month: 1, ids: [eventId, eventId] }]);
+    expect(result.ok).toBe(false);
+    expect(mocks.saveCulturalEventOrder).not.toHaveBeenCalled();
+  });
+
+  it("rejects unauthenticated users before writing an order", async () => {
+    mocks.requireAdmin.mockRejectedValue(new Error("unauthorized"));
+    await expect(saveCulturalEventOrderAction([{ month: 1, ids: [eventId] }])).rejects.toThrow("unauthorized");
+    expect(mocks.saveCulturalEventOrder).not.toHaveBeenCalled();
   });
 });

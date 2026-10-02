@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/server/admin-auth";
-import { createCulturalEvent, deleteCulturalEvent, getCulturalEvent, setCulturalEventActive, updateCulturalEvent } from "@/lib/server/cultural-events";
+import { createCulturalEvent, deleteCulturalEvent, getCulturalEvent, saveCulturalEventOrder, setCulturalEventActive, updateCulturalEvent } from "@/lib/server/cultural-events";
 import { culturalEventImageAlt, culturalEventSchema, monthOrderFor, slugifyCulturalEventName } from "@/lib/domain/cultural-events";
 import { deleteManagedEventImage, uploadEventImage } from "@/lib/server/event-images";
 
@@ -31,6 +31,9 @@ function parseInput(raw: unknown, existing?: Awaited<ReturnType<typeof getCultur
     imageAlt: existing?.imageAlt ?? culturalEventImageAlt(String(value.name ?? "")),
     externalUrl: value.externalUrl || "",
     sourceUrl: existing?.sourceUrl || "",
+    // The order is never admin-entered. Existing events retain it; new ones
+    // are appended and normalized by the persistence layer.
+    sortOrder: existing?.sortOrder ?? 0,
   });
 }
 
@@ -95,4 +98,30 @@ export async function deleteCulturalEventAction(id: string): Promise<EventAction
     revalidatePath("/admin/eventos");
     return { ok: true, message: "Evento eliminado." };
   } catch (error) { return { ok: false, message: errorMessage(error) }; }
+}
+
+const eventOrderSchema = z.array(z.object({
+  month: z.number().int().min(1).max(12),
+  ids: z.array(z.uuid()).min(1),
+})).min(1).superRefine((groups, context) => {
+  const months = new Set<number>();
+  const ids = new Set<string>();
+  groups.forEach((group, groupIndex) => {
+    if (months.has(group.month)) context.addIssue({ code: "custom", message: "Un mes fue enviado más de una vez.", path: [groupIndex, "month"] });
+    months.add(group.month);
+    group.ids.forEach((id, idIndex) => {
+      if (ids.has(id)) context.addIssue({ code: "custom", message: "Un evento fue enviado más de una vez.", path: [groupIndex, "ids", idIndex] });
+      ids.add(id);
+    });
+  });
+});
+
+export async function saveCulturalEventOrderAction(raw: unknown): Promise<EventActionResult> {
+  await requireAdmin();
+  try {
+    await saveCulturalEventOrder(eventOrderSchema.parse(raw));
+    revalidatePath("/agenda");
+    revalidatePath("/admin/eventos");
+    return { ok: true, message: "Orden guardado" };
+  } catch { return { ok: false, message: "No se pudo guardar el orden." }; }
 }

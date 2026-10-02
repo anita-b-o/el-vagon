@@ -87,6 +87,7 @@ test("keeps the admin panel private and the calendar export token-protected", as
   const response = await page.goto("/admin/reservas");
   expect(response?.status()).toBeLessThan(400);
   await expect(page).toHaveURL(/\/admin\/login/);
+  await expect(page).not.toHaveURL(/\/$/);
   await expect(page.getByRole("heading", { name: "Administración" })).toBeVisible();
   await expect(page.getByText(/Ingresá con la cuenta de Google autorizada/)).toHaveCount(0);
 
@@ -112,6 +113,7 @@ test("opens the private admin route from the footer", async ({ page }) => {
   await adminLink.click();
 
   await expect(page).toHaveURL(/\/admin\/login/);
+  await expect(page).not.toHaveURL(/\/$/);
   await expect(page.getByRole("heading", { name: "Administración" })).toBeVisible();
 });
 
@@ -378,14 +380,19 @@ test("presents the recurring General Belgrano events on the agenda page", async 
   await expect(agendaLink).toHaveAttribute("target", "_blank");
   await expect(agendaLink).toHaveAttribute("rel", "noopener noreferrer");
 
-  const photos = section.locator(".event-story-image img");
-  await expect(photos).toHaveCount(8);
-  for (let index = 0; index < 8; index += 1) {
-    const photo = photos.nth(index);
-    await photo.scrollIntoViewIfNeeded();
-    await expect
-      .poll(() => photo.evaluate((image) => (image as HTMLImageElement).naturalWidth))
-      .toBeGreaterThan(0);
+  for (const eventName of expectedEvents) {
+    const article = section.getByRole("article").filter({
+      has: page.getByRole("heading", { name: eventName }),
+    });
+    const photo = article.locator(".event-story-image img");
+    if (await photo.count()) {
+      await photo.scrollIntoViewIfNeeded();
+      await expect
+        .poll(() => photo.evaluate((image) => (image as HTMLImageElement).naturalWidth))
+        .toBeGreaterThan(0);
+    } else {
+      await expect(article).toHaveClass(/is-typographic/);
+    }
   }
 
   const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();

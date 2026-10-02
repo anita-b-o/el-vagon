@@ -2,16 +2,23 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth, signIn } from "@/auth";
 import { isAllowedAdminProfile } from "@/lib/domain/admin-auth";
+import { adminReturnTo } from "@/lib/domain/admin-return-to";
 
 export const metadata = { title: "Administración | El Vagón" };
 
-export default async function AdminLoginPage() {
+export default async function AdminLoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string | string[] }>;
+}) {
+  const { callbackUrl } = await searchParams;
+  const returnTo = adminReturnTo(callbackUrl);
   const session = await auth();
   if (isAllowedAdminProfile({
     email: session?.user?.email,
     email_verified: Boolean(session?.user?.email),
   })) {
-    redirect("/admin/reservas");
+    redirect(returnTo);
   }
 
   return (
@@ -21,7 +28,7 @@ export default async function AdminLoginPage() {
         <h1>Administración</h1>
         <form action={async () => {
           "use server";
-          await signIn("google", { redirectTo: "/admin/reservas" });
+          await signIn("google", { redirectTo: returnTo });
         }}>
           <button className="button button-dark button-large" type="submit">
             Continuar con Google
