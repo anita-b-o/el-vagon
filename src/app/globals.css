@@ -719,6 +719,168 @@ img {
   flex: 0 0 auto;
 }
 
+/* Frequently asked questions */
+.faq-section {
+  background: var(--cream);
+}
+
+.faq-layout {
+  display: grid;
+  align-items: start;
+  grid-template-columns: minmax(18rem, 0.62fr) minmax(0, 1.38fr);
+  gap: clamp(4rem, 9vw, 10rem);
+}
+
+.faq-heading {
+  position: sticky;
+  top: calc(var(--header-height) + 3rem);
+}
+
+.faq-heading h2 {
+  max-width: 30rem;
+  margin: 0;
+  color: var(--forest);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3rem, 5.2vw, 5.5rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.faq-heading > p:last-child {
+  max-width: 29rem;
+  margin: 2rem 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
+}
+
+.faq-list {
+  border-top: 1px solid var(--border);
+}
+
+.faq-item {
+  interpolate-size: allow-keywords;
+  border-bottom: 1px solid var(--border);
+}
+
+.faq-item::details-content {
+  block-size: 0;
+  overflow-y: clip;
+  opacity: 0;
+  transition:
+    content-visibility 350ms allow-discrete,
+    block-size 350ms var(--ease),
+    opacity 250ms ease;
+}
+
+.faq-item[open]::details-content {
+  block-size: auto;
+  opacity: 1;
+}
+
+.faq-item summary {
+  display: grid;
+  min-height: 6.5rem;
+  align-items: center;
+  grid-template-columns: 2.25rem minmax(0, 1fr) 2.5rem;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  padding-block: 1.25rem;
+  color: var(--forest);
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary:focus-visible {
+  border-radius: 0.1rem;
+}
+
+.faq-number {
+  color: var(--earth);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.faq-question {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  line-height: 1.15;
+}
+
+.faq-indicator {
+  position: relative;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  justify-self: end;
+  transition:
+    background-color 250ms ease,
+    border-color 250ms ease,
+    transform 350ms var(--ease);
+}
+
+.faq-indicator::before,
+.faq-indicator::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.8rem;
+  height: 1px;
+  background: currentColor;
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.faq-indicator::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+  transition: transform 350ms var(--ease);
+}
+
+.faq-item summary:hover .faq-indicator,
+.faq-item summary:focus-visible .faq-indicator,
+.faq-item[open] .faq-indicator {
+  border-color: var(--forest);
+  background: var(--forest);
+  color: var(--warm-white);
+}
+
+.faq-item[open] .faq-indicator {
+  transform: rotate(180deg);
+}
+
+.faq-item[open] .faq-indicator::after {
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+.faq-answer {
+  padding: 0 4rem 2rem calc(2.25rem + clamp(0.75rem, 2vw, 1.5rem));
+  animation: faq-answer-in 350ms var(--ease) both;
+}
+
+.faq-answer p {
+  max-width: 43rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+@keyframes faq-answer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.4rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Experience */
 .experience-section {
   position: relative;
@@ -2715,6 +2877,7 @@ img {
   .accommodation-story,
   .room-composition,
   .amenities-wrap,
+  .faq-layout,
   .destination-header,
   .destination-images,
   .events-intro,
@@ -2723,6 +2886,14 @@ img {
   .destination-guide-grid,
   .destination-cta-grid {
     grid-template-columns: 1fr;
+  }
+
+  .faq-layout {
+    gap: 3.5rem;
+  }
+
+  .faq-heading {
+    position: static;
   }
 
   .stay-spaces-grid {
@@ -3117,6 +3288,20 @@ img {
     justify-content: center;
     gap: 0.55rem;
     font-size: 0.72rem;
+  }
+
+  .faq-item summary {
+    min-height: 5.75rem;
+    grid-template-columns: minmax(0, 1fr) 2.5rem;
+  }
+
+  .faq-number {
+    display: none;
+  }
+
+  .faq-answer {
+    padding-right: 3rem;
+    padding-left: 0;
   }
 
   .experience-section {

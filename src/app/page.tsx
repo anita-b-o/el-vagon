@@ -2,6 +2,7 @@ import { Accommodation } from "@/components/Accommodation";
 import { Amenities } from "@/components/Amenities";
 import { Experience } from "@/components/Experience";
 import { Footer } from "@/components/Footer";
+import { FrequentlyAskedQuestions } from "@/components/FrequentlyAskedQuestions";
 import { GallerySection } from "@/components/GallerySection";
 import { GeneralBelgrano } from "@/components/GeneralBelgrano";
 import { Header } from "@/components/Header";
@@ -60,6 +61,7 @@ export default function Home() {
         <Intro />
         <Accommodation />
         <Amenities />
+        <FrequentlyAskedQuestions />
         <Experience />
         <GallerySection />
         <GeneralBelgrano />

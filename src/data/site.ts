@@ -55,6 +55,76 @@ export const amenities = [
   { label: "No se permiten mascotas", icon: "paw" },
 ] as const;
 
+export type FrequentlyAskedQuestion = {
+  question: string;
+  answer: string;
+};
+
+export const frequentlyAskedQuestions = [
+  {
+    question: "¿Para cuántas personas es El Vagón?",
+    answer: "El alojamiento está pensado para 2 personas y cuenta con una cama doble.",
+  },
+  {
+    question: "¿El alojamiento es accesible para personas con movilidad reducida?",
+    answer:
+      "No. El Vagón no está adaptado para personas con movilidad reducida. Si tenés alguna necesidad particular de accesibilidad, recomendamos consultarnos antes de reservar.",
+  },
+  {
+    question: "¿El baño está adaptado para personas con movilidad reducida?",
+    answer:
+      "No. El baño no está adaptado, aunque cuenta con una manija de apoyo para sujetarse.",
+  },
+  {
+    question: "¿El alojamiento tiene baño privado?",
+    answer: "Sí. El Vagón cuenta con baño privado dentro del alojamiento.",
+  },
+  {
+    question: "¿Tiene cocina?",
+    answer: "Sí. Cuenta con cocina propia para preparar comidas durante la estadía.",
+  },
+  {
+    question: "¿Tiene Wi-Fi?",
+    answer: "Sí. El alojamiento dispone de conexión Wi-Fi.",
+  },
+  {
+    question: "¿Hay estacionamiento?",
+    answer: "Sí. El Vagón cuenta con estacionamiento para los huéspedes.",
+  },
+  {
+    question: "¿Tiene pileta?",
+    answer: "Sí. Hay pileta disponible durante la temporada.",
+  },
+  {
+    question: "¿Tiene espacio al aire libre?",
+    answer:
+      "Sí. El alojamiento cuenta con jardín y espacios exteriores para disfrutar durante la estadía.",
+  },
+  {
+    question: "¿Hay bicicletas disponibles?",
+    answer: "Sí. El Vagón cuenta con bicicletas para uso de los huéspedes.",
+  },
+  {
+    question: "¿Cuáles son los horarios de ingreso y salida?",
+    answer: "El check-in es a partir de las 15:00 y el check-out es hasta las 11:00.",
+  },
+  {
+    question: "¿Cómo puedo consultar disponibilidad o reservar?",
+    answer:
+      "Podés seleccionar las fechas desde nuestro calendario de disponibilidad y enviarnos tu consulta por WhatsApp.",
+  },
+  {
+    question: "¿Qué sucede si una fecha aparece ocupada en el calendario?",
+    answer:
+      "Las noches marcadas como ocupadas no se encuentran disponibles para nuevas reservas.",
+  },
+  {
+    question: "¿Dónde está ubicado El Vagón?",
+    answer:
+      "El alojamiento se encuentra en General Belgrano, provincia de Buenos Aires.",
+  },
+] as const satisfies readonly FrequentlyAskedQuestion[];
+
 export type GalleryImage = {
   src: string;
   alt: string;

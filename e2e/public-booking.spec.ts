@@ -47,6 +47,46 @@ test("shows the boutique availability experience", async ({ page }, testInfo) =>
   await expect(visibleMonths).toHaveCount(testInfo.project.name === "mobile" ? 1 : 2);
 });
 
+test("keeps the FAQ accessible and responsive", async ({ page }) => {
+  for (const width of [375, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: width < 768 ? 844 : 900 });
+    await page.goto("/#preguntas-frecuentes");
+
+    const faq = page.locator("#preguntas-frecuentes");
+    await expect(
+      faq.getByRole("heading", { name: "Preguntas frecuentes", level: 2 }),
+    ).toBeVisible();
+    await expect(faq.locator("details")).toHaveCount(14);
+    await expect(faq.locator("details[open]")).toHaveCount(0);
+
+    const firstQuestion = faq.locator("summary").first();
+    await firstQuestion.focus();
+    await expect(firstQuestion).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(faq.locator("details").first()).toHaveAttribute("open", "");
+    await expect(
+      faq.getByText(
+        "El alojamiento está pensado para 2 personas y cuenta con una cama doble.",
+      ),
+    ).toBeVisible();
+    await page.keyboard.press("Space");
+    await expect(faq.locator("details").first()).not.toHaveAttribute("open", "");
+
+    const layout = await faq.evaluate((section) => {
+      const box = section.getBoundingClientRect();
+      return {
+        insideViewport: box.left >= -0.5 && box.right <= window.innerWidth + 0.5,
+        noHorizontalOverflow:
+          document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      };
+    });
+    expect(layout, `FAQ layout at ${width}px`).toEqual({
+      insideViewport: true,
+      noHorizontalOverflow: true,
+    });
+  }
+});
+
 test("creates a pending request before handing off to WhatsApp", async ({ page }) => {
   const checkIn = futureArgentinaDate(7);
   const checkOut = futureArgentinaDate(9);
