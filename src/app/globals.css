@@ -697,6 +697,12 @@ img {
   list-style: none;
 }
 
+.amenities-list::after {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--border);
+  content: "";
+}
+
 .amenities-list li {
   display: flex;
   min-height: 7rem;
@@ -706,10 +712,6 @@ img {
   color: var(--forest);
   font-size: 0.8rem;
   font-weight: 600;
-}
-
-.amenities-list li:nth-last-child(-n + 2) {
-  border-bottom: 1px solid var(--border);
 }
 
 .amenities-list svg {
@@ -3005,10 +3007,6 @@ img {
 
   .amenities-list {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .amenities-list li:nth-last-child(-n + 2) {
-    border-bottom: 1px solid var(--border);
   }
 
   .destination-copy {
