@@ -36,6 +36,7 @@ export const navigation = [
   { label: "Galería", href: "/#galeria" },
   { label: "Ubicación", href: "/#ubicacion" },
   { label: "Disponibilidad", href: "/#reservas" },
+  { label: "Preguntas frecuentes", href: "/#preguntas-frecuentes" },
   { label: "General Belgrano", href: "/general-belgrano" },
   { label: "Agenda", href: "/agenda" },
 ] as const;

@@ -108,6 +108,57 @@ test("places the FAQ immediately after the reservation section", async ({ page }
   await expect(page.locator("#reservas + #preguntas-frecuentes")).toHaveCount(1);
 });
 
+test("adds the FAQ link after availability in the desktop and mobile navigation", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+
+  const desktopLinks = page.locator(".desktop-nav a");
+  await expect(desktopLinks).toHaveText([
+    "El Vagón",
+    "Experiencia",
+    "Galería",
+    "Ubicación",
+    "Disponibilidad",
+    "Preguntas frecuentes",
+    "General Belgrano",
+    "Agenda",
+  ]);
+
+  const desktopFaqLink = page.getByRole("navigation", { name: "Navegación principal" })
+    .getByRole("link", { name: "Preguntas frecuentes", exact: true });
+  await expect(desktopFaqLink).toHaveAttribute("href", "/#preguntas-frecuentes");
+  await desktopFaqLink.click();
+  await expect(page).toHaveURL(/#preguntas-frecuentes$/);
+  await expect(page.locator("#preguntas-frecuentes")).toBeInViewport();
+  await expect.poll(() => page.locator("#preguntas-frecuentes").evaluate((section) => {
+    const header = document.querySelector(".site-header");
+    return section.getBoundingClientRect().top >= (header?.getBoundingClientRect().height ?? 0);
+  })).toBe(true);
+
+  await page.setViewportSize({ width: 375, height: 844 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Abrir menú" }).click();
+
+  const mobileLinks = page.getByRole("navigation", { name: "Navegación móvil" }).getByRole("link");
+  await expect(mobileLinks).toHaveText([
+    "01El Vagón",
+    "02Experiencia",
+    "03Galería",
+    "04Ubicación",
+    "05Disponibilidad",
+    "06Preguntas frecuentes",
+    "07General Belgrano",
+    "08Agenda",
+  ]);
+  expect(await page.locator("html").evaluate((html) => (
+    html.scrollWidth <= html.clientWidth
+  ))).toBe(true);
+
+  await mobileLinks.nth(5).click();
+  await expect(page).toHaveURL(/#preguntas-frecuentes$/);
+  await expect(page.getByRole("button", { name: "Abrir menú" })).toBeVisible();
+});
+
 test("creates a pending request before handing off to WhatsApp", async ({ page }) => {
   const checkIn = futureArgentinaDate(7);
   const checkOut = futureArgentinaDate(9);
