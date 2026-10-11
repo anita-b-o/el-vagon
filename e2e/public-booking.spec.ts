@@ -56,21 +56,37 @@ test("keeps the FAQ accessible and responsive", async ({ page }) => {
     await expect(
       faq.getByRole("heading", { name: "Preguntas frecuentes", level: 2 }),
     ).toBeVisible();
-    await expect(faq.locator("details")).toHaveCount(14);
+    await expect(faq.locator(".faq-category")).toHaveCount(4);
     await expect(faq.locator("details[open]")).toHaveCount(0);
 
-    const firstQuestion = faq.locator("summary").first();
-    await firstQuestion.focus();
-    await expect(firstQuestion).toBeFocused();
+    const firstCategory = faq.locator(".faq-category > summary").first();
+    await firstCategory.focus();
+    await expect(firstCategory).toBeFocused();
     await page.keyboard.press("Enter");
-    await expect(faq.locator("details").first()).toHaveAttribute("open", "");
+    await expect(faq.locator(".faq-category").first()).toHaveAttribute("open", "");
     await expect(
       faq.getByText(
-        "El alojamiento está pensado para 2 personas y cuenta con una cama doble.",
+        "¿Cómo puedo consultar disponibilidad y reservar?",
       ),
     ).toBeVisible();
-    await page.keyboard.press("Space");
-    await expect(faq.locator("details").first()).not.toHaveAttribute("open", "");
+
+    const firstQuestion = faq.locator(".faq-item > summary").first();
+    await firstQuestion.focus();
+    await page.keyboard.press("Enter");
+    await expect(faq.locator(".faq-item").first()).toHaveAttribute("open", "");
+    await expect(
+      faq.getByText(
+        "Podés seleccionar tus fechas en el calendario de disponibilidad y enviarnos una consulta por WhatsApp.",
+      ),
+    ).toBeVisible();
+
+    await faq.locator(".faq-category > summary").nth(1).click();
+    await expect(faq.locator(".faq-category[open]")).toHaveCount(2);
+
+    await firstQuestion.click();
+    await firstCategory.click();
+    await faq.locator(".faq-category > summary").nth(1).click();
+    await expect(faq.locator("details[open]")).toHaveCount(0);
 
     const layout = await faq.evaluate((section) => {
       const box = section.getBoundingClientRect();
@@ -85,6 +101,11 @@ test("keeps the FAQ accessible and responsive", async ({ page }) => {
       noHorizontalOverflow: true,
     });
   }
+});
+
+test("places the FAQ immediately after the reservation section", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("#reservas + #preguntas-frecuentes")).toHaveCount(1);
 });
 
 test("creates a pending request before handing off to WhatsApp", async ({ page }) => {

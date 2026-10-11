@@ -17,17 +17,24 @@ export function FrequentlyAskedQuestions() {
         </div>
 
         <div className="faq-list reveal">
-          {frequentlyAskedQuestions.map((item, index) => (
-            <details className="faq-item" key={item.question}>
+          {frequentlyAskedQuestions.map((category) => (
+            <details className="faq-category" key={category.id}>
               <summary>
-                <span className="faq-number" aria-hidden="true">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span className="faq-question">{item.question}</span>
+                <span className="faq-category-title">{category.title}</span>
                 <span className="faq-indicator" aria-hidden="true" />
               </summary>
-              <div className="faq-answer">
-                <p>{item.answer}</p>
+              <div className="faq-questions">
+                {category.questions.map((item) => (
+                  <details className="faq-item" key={item.id}>
+                    <summary>
+                      <span className="faq-question">{item.question}</span>
+                      <span className="faq-question-indicator" aria-hidden="true" />
+                    </summary>
+                    <div className="faq-answer">
+                      <p>{item.answer}</p>
+                    </div>
+                  </details>
+                ))}
               </div>
             </details>
           ))}

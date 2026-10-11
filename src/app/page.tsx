@@ -61,12 +61,12 @@ export default function Home() {
         <Intro />
         <Accommodation />
         <Amenities />
-        <FrequentlyAskedQuestions />
         <Experience />
         <GallerySection />
         <GeneralBelgrano />
         <Location />
         <ReservationSection />
+        <FrequentlyAskedQuestions />
       </main>
       <Footer />
       <script
