@@ -74,10 +74,15 @@ export const frequentlyAskedQuestions = [
     title: "Reservas y horarios",
     questions: [
       {
+        id: "confirmar-reserva",
+        question: "¿Cómo confirmo mi reserva?",
+        answer: "La reserva se confirma abonando el 50% del importe de la estadía.",
+      },
+      {
         id: "consultar-disponibilidad",
-        question: "¿Cómo puedo consultar disponibilidad y reservar?",
+        question: "¿Cómo consulto disponibilidad?",
         answer:
-          "Podés seleccionar tus fechas en el calendario de disponibilidad y enviarnos una consulta por WhatsApp.",
+          "Podés seleccionar las fechas en nuestro calendario y enviarnos tu consulta por WhatsApp.",
       },
       {
         id: "horarios-ingreso-salida",
@@ -114,19 +119,15 @@ export const frequentlyAskedQuestions = [
     title: "Comodidades y servicios",
     questions: [
       {
-        id: "pileta-temporada",
-        question: "¿La pileta está disponible durante todo el año?",
-        answer: "No. La pileta está disponible durante la temporada.",
+        id: "servicios",
+        question: "¿Qué servicios ofrece El Vagón?",
+        answer:
+          "El alojamiento cuenta con Wi-Fi, Smart TV, ropa de cama y toallas, artículos de aseo básicos, calefactores, ventiladores de techo, cochera cubierta, quincho, parrilla y bicicletas. También dispone de pileta compartida durante la temporada.",
       },
       {
-        id: "bicicletas",
-        question: "¿Hay bicicletas disponibles para los huéspedes?",
-        answer: "Sí. El Vagón cuenta con bicicletas para uso de los huéspedes.",
-      },
-      {
-        id: "estacionamiento",
-        question: "¿Hay estacionamiento disponible?",
-        answer: "Sí. El alojamiento cuenta con estacionamiento para los huéspedes.",
+        id: "pileta-privada",
+        question: "¿La pileta es privada?",
+        answer: "No. La pileta es compartida y está disponible durante la temporada.",
       },
     ],
   },
@@ -139,6 +140,12 @@ export const frequentlyAskedQuestions = [
         question: "¿Dónde está ubicado El Vagón?",
         answer:
           "El alojamiento se encuentra en General Belgrano, provincia de Buenos Aires.",
+      },
+      {
+        id: "privacidad",
+        question: "¿Voy a tener privacidad durante mi estadía?",
+        answer:
+          "El Vagón se encuentra en un jardín arbolado de aproximadamente 2.000 m², que ofrece un entorno agradable para descansar. La pileta es compartida.",
       },
     ],
   },

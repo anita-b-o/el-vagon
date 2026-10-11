@@ -66,7 +66,7 @@ test("keeps the FAQ accessible and responsive", async ({ page }) => {
     await expect(faq.locator(".faq-category").first()).toHaveAttribute("open", "");
     await expect(
       faq.getByText(
-        "¿Cómo puedo consultar disponibilidad y reservar?",
+        "¿Cómo confirmo mi reserva?",
       ),
     ).toBeVisible();
 
@@ -76,13 +76,21 @@ test("keeps the FAQ accessible and responsive", async ({ page }) => {
     await expect(faq.locator(".faq-item").first()).toHaveAttribute("open", "");
     await expect(
       faq.getByText(
-        "Podés seleccionar tus fechas en el calendario de disponibilidad y enviarnos una consulta por WhatsApp.",
+        "La reserva se confirma abonando el 50% del importe de la estadía.",
+      ),
+    ).toBeVisible();
+
+    await faq.locator(".faq-item > summary").nth(1).click();
+    await expect(
+      faq.getByText(
+        "Podés seleccionar las fechas en nuestro calendario y enviarnos tu consulta por WhatsApp.",
       ),
     ).toBeVisible();
 
     await faq.locator(".faq-category > summary").nth(1).click();
     await expect(faq.locator(".faq-category[open]")).toHaveCount(2);
 
+    await faq.locator(".faq-item > summary").nth(1).click();
     await firstQuestion.click();
     await firstCategory.click();
     await faq.locator(".faq-category > summary").nth(1).click();
@@ -100,6 +108,19 @@ test("keeps the FAQ accessible and responsive", async ({ page }) => {
       insideViewport: true,
       noHorizontalOverflow: true,
     });
+
+    const colors = await faq.evaluate((section) => {
+      const category = section.querySelector(".faq-category");
+      const categorySummary = category?.querySelector("summary");
+      return {
+        sectionBackground: getComputedStyle(section).backgroundColor,
+        categoryBackground: category ? getComputedStyle(category).backgroundColor : "",
+        textColor: categorySummary ? getComputedStyle(categorySummary).color : "",
+      };
+    });
+    expect(colors.sectionBackground).toBe("rgb(232, 223, 207)");
+    expect(colors.categoryBackground).toBe("rgb(255, 252, 245)");
+    expect(colors.textColor).toBe("rgb(32, 56, 42)");
   }
 });
 

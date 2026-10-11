@@ -18,6 +18,9 @@ describe("FrequentlyAskedQuestions", () => {
     const categories = container.querySelectorAll<HTMLDetailsElement>(".faq-category");
     expect(categories).toHaveLength(4);
     expect(container.querySelectorAll("details[open]")).toHaveLength(0);
+    expect(
+      Array.from(categories, (category) => category.querySelectorAll(".faq-item").length),
+    ).toEqual([4, 2, 2, 2]);
 
     frequentlyAskedQuestions.forEach(({ title, questions }, index) => {
       expect(within(categories[index]).getByText(title)).toBeInTheDocument();
@@ -73,8 +76,25 @@ describe("FrequentlyAskedQuestions", () => {
     ).toBeInTheDocument();
   });
 
-  it("does not repeat amenities already covered in Lo esencial", () => {
+  it("states reservation, services, pool, and setting details without redundant questions", () => {
     render(<FrequentlyAskedQuestions />);
+
+    expect(
+      screen.getByText("La reserva se confirma abonando el 50% del importe de la estadía."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "El alojamiento cuenta con Wi-Fi, Smart TV, ropa de cama y toallas, artículos de aseo básicos, calefactores, ventiladores de techo, cochera cubierta, quincho, parrilla y bicicletas. También dispone de pileta compartida durante la temporada.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("No. La pileta es compartida y está disponible durante la temporada."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "El Vagón se encuentra en un jardín arbolado de aproximadamente 2.000 m², que ofrece un entorno agradable para descansar. La pileta es compartida.",
+      ),
+    ).toBeInTheDocument();
 
     [
       "¿Tiene cocina?",
@@ -83,6 +103,10 @@ describe("FrequentlyAskedQuestions", () => {
       "¿Tiene espacio al aire libre?",
       "¿Qué incluye el alojamiento?",
       "¿Para cuántas personas es El Vagón?",
+      "¿Hay bicicletas disponibles para los huéspedes?",
+      "¿Hay estacionamiento disponible?",
+      "¿La pileta está disponible durante todo el año?",
     ].forEach((question) => expect(screen.queryByText(question)).not.toBeInTheDocument());
   });
+
 });
